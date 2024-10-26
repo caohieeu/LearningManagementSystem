@@ -20,7 +20,7 @@ namespace LearningManagementSystem.Services
             _mapper = mapper;
         }
 
-        public async Task<ResponseEntity> SignInAsync(SignInDto model)
+        public async Task<AuthResponseDto> SignInAsync(SignInDto model)
         {
             return await _accountRepository.SignInAsync(model);
         }

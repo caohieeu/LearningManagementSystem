@@ -12,8 +12,7 @@ namespace LearningManagementSystem.Models
         public DateTime LastUpdate { get; set; }
         public double Size { get; set; }
         public string Type { get; set; }
-        public string SubjectId { get; set; }
-        [ForeignKey("SubjectId")]
-        public Subject Subject { get; set; }
+        public string Approver { get; set; }
+        public string Status { get; set; }
     }
 }

@@ -27,14 +27,21 @@ namespace LearningManagementSystem.Controllers
             };
         }
         [HttpPost("")]
-        public async Task<ResponseEntity> AddSubject([FromBody] SubjectRequestDto subject)
+        public async Task<IActionResult> AddSubject([FromBody] SubjectRequestDto subject)
         {
-            return new ResponseEntity
+            if(await _subjectService.AddSubject(subject))
             {
-                code = ErrorCode.NoError.GetErrorInfo().code,
-                message = ErrorCode.NoError.GetErrorInfo().message,
-                data = await _subjectService.AddSubject(subject)
-            };
+                return Ok(new ResponseEntity
+                {
+                    code = ErrorCode.NoError.GetErrorInfo().code,
+                    message = ErrorCode.NoError.GetErrorInfo().message,
+                });
+            }
+            return BadRequest(new ResponseEntity
+            {
+                code = ErrorCode.Error.GetErrorInfo().code,
+                message = ErrorCode.Error.GetErrorInfo().message,
+            });
         }
         [HttpPut("")]
         public async Task<ResponseEntity> UpdateSubject([FromBody] SubjectRequestDto subject)

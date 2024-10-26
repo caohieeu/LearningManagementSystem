@@ -35,7 +35,7 @@ namespace LearningManagementSystem.Repositories
         {
             var authClaims = new List<Claim>
             {
-                new Claim(ClaimTypes.Email, model.Email),
+                new Claim("UserName", model.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
@@ -72,46 +72,36 @@ namespace LearningManagementSystem.Repositories
             }
             return newId;
         }
-        public async Task<ResponseEntity> SignInAsync(SignInDto model)
+        public async Task<AuthResponseDto> SignInAsync(SignInDto model)
         {
-            ResponseEntity responseEntity = new ResponseEntity
+            AuthResponseDto authResponseDto = new AuthResponseDto
             {
-                code = 200,
-                message = "Sai tên hoặc tài khoản",
-                data = null
+                result = false,
+                token = null
             };
 
             var result = await _signInManager.PasswordSignInAsync
-                (model.Email, model.Password, false, false);
+                (model.UserName, model.Password, false, false);
 
             if(!result.Succeeded)
             {
-                return responseEntity;
+                return authResponseDto;
             }
 
-            responseEntity.message = ErrorCode.NoError.GetErrorInfo().message;
-            responseEntity.data = new
-            {
-                token = GenerateToken(model)
-            };
+            authResponseDto.result = true;
+            authResponseDto.token = GenerateToken(model);
 
-            return responseEntity;
+            return authResponseDto;
         }
 
         public Task<IdentityResult> SignUpAsync(SignUpDto model)
         {
-            ResponseEntity responseEntity = new ResponseEntity
-            {
-                code = 200,
-                message = "Sai tên hoặc tài khoản",
-                data = null
-            };
-
             var user = new ApplicationUser
             {
                 Id = model.Id,
-                UserName = model.Username,
+                UserName = model.UserName,
                 Email = model.Email,
+                FullName = model.FullName,
                 PhoneNumber = model.PhoneNumber,
                 Address = model.Address,
                 Gender = model.Gender,

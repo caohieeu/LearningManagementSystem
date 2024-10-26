@@ -12,10 +12,14 @@ namespace LearningManagementSystem.Models
         public string Name { get; set; }
         public string TeacherId { get; set; }
         [ForeignKey("TeacherId")]
-        public ApplicationUser Teacher { get; set; }
-        public string Description { get; set; }
+        public ApplicationUser Teacher { get; set; } = null!;
+        public string Description { get; set; } = string.Empty;
         public DateTime DateOfSubmitForApprove { get; set; }
-        public string StatusOfSubjectDoc { get; set; }
+        public string StatusOfSubjectDoc { get; set; } = string.Empty;
         public int DocAwaitAprrove { get; set; }
+        public string Note { get; set; } = string.Empty;
+        public int AcademicYearId { get; set; }
+        [ForeignKey("AcademicYearId")]
+        public AcademicYear AcademicYear { get; set; } = null!;
     }
 }

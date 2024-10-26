@@ -7,7 +7,9 @@ namespace LearningManagementSystem.Dtos
         [Required]
         public string Id { get; set; }
         [Required]
-        public string Username {  get; set; }
+        public string FullName { get; set; }
+        [Required]
+        public string UserName {  get; set; }
         [Required]
         public string Password { get; set; }
         [Required]

@@ -9,6 +9,6 @@ namespace LearningManagementSystem.Repositories.IRepository
     public interface IAccountRepository : IRepository<ApplicationUser>
     {
         Task<IdentityResult> SignUpAsync(SignUpDto model);
-        Task<ResponseEntity> SignInAsync(SignInDto model);
+        Task<AuthResponseDto> SignInAsync(SignInDto model);
     }
 }

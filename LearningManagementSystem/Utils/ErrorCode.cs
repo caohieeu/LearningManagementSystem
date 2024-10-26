@@ -5,12 +5,16 @@
         /// <summary>
         /// Không có lỗi, thực hiện thành công
         /// </summary>
-        NoError = 100,
+        NoError = 200,
+        /// <summary>
+        /// Có lỗi, thực hiện không thành công
+        /// </summary>
+        Error = 400,
         /// <summary>
         /// Lỗi 404, không tìm thấy tài khoản với mật khẩu đã nhập
         /// </summary>
         AccountNotFound = 404,
-
+        Unauthorized = 401
     }
 
     public static class ErrorCodeExtension
@@ -19,8 +23,10 @@
         {
             return errorCode switch
             {
+                ErrorCode.Error => (400, "Thực hiện thất bại"),
                 ErrorCode.NoError => (200, "Thực hiện thành công"),
                 ErrorCode.AccountNotFound => (404, "Sai tên hoặc tài khoản"),
+                ErrorCode.Unauthorized => (401, "Không được xác thực"),
                 _ => (0, "Lỗi không xác định")
             };
         }

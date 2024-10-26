@@ -7,8 +7,8 @@ namespace LearningManagementSystem.Services.IService
 {
     public interface IAccountService
     {
-       Task<IdentityResult> SignUpAsync(SignUpDto model);
-        Task<ResponseEntity> SignInAsync(SignInDto model);
+        Task<IdentityResult> SignUpAsync(SignUpDto model);
+        Task<AuthResponseDto> SignInAsync(SignInDto model);
         Task<List<UserResponseDto>> GetAllUser();
     }
 }
