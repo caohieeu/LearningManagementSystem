@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearningManagementSystem.Migrations
 {
     [DbContext(typeof(LMSContext))]
-    [Migration("20241025044554_updateDB1")]
-    partial class updateDB1
+    [Migration("20241028031141_updateDB")]
+    partial class updateDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -131,16 +131,11 @@ namespace LearningManagementSystem.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("LessionId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LessionId");
 
                     b.ToTable("Classes");
                 });
@@ -157,16 +152,25 @@ namespace LearningManagementSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Editor")
+                    b.Property<byte[]>("FileData")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("FileName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("FileType")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsAprroved")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("LastUpdate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("SentDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<double>("Size")
                         .HasColumnType("float");
@@ -207,6 +211,14 @@ namespace LearningManagementSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("ClassId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Name")
                         .HasColumnType("int");
 
@@ -218,9 +230,11 @@ namespace LearningManagementSystem.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClassId");
+
                     b.HasIndex("TitleId");
 
-                    b.ToTable("Lesssions");
+                    b.ToTable("Lession");
                 });
 
             modelBuilder.Entity("LearningManagementSystem.Models.Subject", b =>
@@ -237,9 +251,6 @@ namespace LearningManagementSystem.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DocAwaitAprrove")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -274,8 +285,9 @@ namespace LearningManagementSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("Name")
-                        .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
@@ -424,17 +436,6 @@ namespace LearningManagementSystem.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("LearningManagementSystem.Models.Classes", b =>
-                {
-                    b.HasOne("LearningManagementSystem.Models.Lession", "Lession")
-                        .WithMany()
-                        .HasForeignKey("LessionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Lession");
-                });
-
             modelBuilder.Entity("LearningManagementSystem.Models.DocumentLession", b =>
                 {
                     b.HasOne("LearningManagementSystem.Models.Document", "Document")
@@ -456,11 +457,19 @@ namespace LearningManagementSystem.Migrations
 
             modelBuilder.Entity("LearningManagementSystem.Models.Lession", b =>
                 {
+                    b.HasOne("LearningManagementSystem.Models.Classes", "Classes")
+                        .WithMany()
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("LearningManagementSystem.Models.Title", "Title")
                         .WithMany()
                         .HasForeignKey("TitleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Classes");
 
                     b.Navigation("Title");
                 });

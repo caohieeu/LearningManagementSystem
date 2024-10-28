@@ -18,7 +18,6 @@ namespace LearningManagementSystem.DAL
         public DbSet<Title> Titles { get; set; }
         public DbSet<Classes> Classes { get; set; }
         public DbSet<DocumentLession> DocumentLessions { get; set; }
-        public DbSet<FileDetails> FileDetails { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
 
@@ -26,6 +25,11 @@ namespace LearningManagementSystem.DAL
 
             builder.Entity<DocumentLession>()
                 .HasKey(dl => new { dl.DocumentId, dl.LessionId });
+
+            //builder.Entity<Document>()
+            //    .HasOne(u => u.FileDetails)
+            //    .WithOne(fd => fd.Document)
+            //    .HasForeignKey<FileDetails>(u => u.Id); 
 
             //builder.Entity<ApplicationUser>(entity =>
             //{

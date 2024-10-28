@@ -2,7 +2,7 @@
 
 namespace LearningManagementSystem.Dtos
 {
-    public class FileUploadModel
+    public class FileUploadDto
     {
         public IFormFile FileDetails { get; set; }
         public FileType FileType { get; set; }

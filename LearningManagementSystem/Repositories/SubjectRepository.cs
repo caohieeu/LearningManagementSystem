@@ -21,5 +21,19 @@ namespace LearningManagementSystem.Repositories
                 .Include(p => p.Teacher)
                 .ToListAsync();
         }
+
+        public async Task<Subject?> GetSubjectById(string id)
+        {
+            try
+            {
+                return await _context.Subjects
+                .Where(x => x.Id == id)
+                .FirstOrDefaultAsync();
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

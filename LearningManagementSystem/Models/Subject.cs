@@ -16,7 +16,7 @@ namespace LearningManagementSystem.Models
         public string Description { get; set; } = string.Empty;
         public DateTime DateOfSubmitForApprove { get; set; }
         public string StatusOfSubjectDoc { get; set; } = string.Empty;
-        public int DocAwaitAprrove { get; set; }
+        //public int DocAwaitAprrove { get; set; }
         public string Note { get; set; } = string.Empty;
         public int AcademicYearId { get; set; }
         [ForeignKey("AcademicYearId")]

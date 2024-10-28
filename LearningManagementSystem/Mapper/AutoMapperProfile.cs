@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LearningManagementSystem.Dtos;
 using LearningManagementSystem.Dtos.Request;
 using LearningManagementSystem.Dtos.Response;
 using LearningManagementSystem.Models;
@@ -12,6 +13,7 @@ namespace LearningManagementSystem.Mapper
             CreateMap<SubjectRequestDto, Subject>().ReverseMap();
             CreateMap<SubjectResponseDto, Subject>().ReverseMap();
             CreateMap<UserResponseDto, ApplicationUser>().ReverseMap();
+            CreateMap<TitleResponseDto, Title>().ReverseMap();
             CreateMap<TitleRequestDto, Title>().ReverseMap();
         }
     }

@@ -14,6 +14,10 @@
         /// Lỗi 404, không tìm thấy tài khoản với mật khẩu đã nhập
         /// </summary>
         AccountNotFound = 404,
+        /// <summary>
+        /// Lỗi 404, không tìm thấy tài nguyên với yêu cầu
+        /// </summary>
+        NotFound = 404,
         Unauthorized = 401
     }
 
@@ -25,7 +29,8 @@
             {
                 ErrorCode.Error => (400, "Thực hiện thất bại"),
                 ErrorCode.NoError => (200, "Thực hiện thành công"),
-                ErrorCode.AccountNotFound => (404, "Sai tên hoặc tài khoản"),
+                ErrorCode.NotFound => (404, "Không tìm thấy tài nguyên với yêu cầu"),
+                //ErrorCode.AccountNotFound => (404, "Sai tên hoặc tài khoản"),
                 ErrorCode.Unauthorized => (401, "Không được xác thực"),
                 _ => (0, "Lỗi không xác định")
             };

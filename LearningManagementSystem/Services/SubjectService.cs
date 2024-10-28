@@ -74,5 +74,10 @@ namespace LearningManagementSystem.Services
         {
             return await _subjectRepository.Update(subject);
         }
+
+        public async Task<Subject> GetSubject(string id)
+        {
+            return await _subjectRepository.GetSubjectById(id);
+        }
     }
 }

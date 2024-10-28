@@ -8,8 +8,5 @@ namespace LearningManagementSystem.Models
         [Key]
         public string Id { get; set; }
         public string Name { get; set; }
-        public int TitleId { get; set; }
-        [ForeignKey("TitleId")]
-        public Title Title { get; set; }
     }
 }

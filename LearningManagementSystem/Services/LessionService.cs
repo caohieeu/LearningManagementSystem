@@ -7,7 +7,7 @@ namespace LearningManagementSystem.Services
     {
         public Task<bool> InsertLession(Lession lession)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

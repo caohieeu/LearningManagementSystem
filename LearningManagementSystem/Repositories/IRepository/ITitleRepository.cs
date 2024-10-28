@@ -7,5 +7,6 @@ namespace LearningManagementSystem.Repositories.IRepository
     {
         Task<bool> AddTitle(TitleRequestDto title);
         Task<List<Title>> GetBySubject(string id);
+        Task<bool> DeleteById(int id);
     }
 }

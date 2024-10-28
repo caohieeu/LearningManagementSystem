@@ -87,6 +87,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+//middleware
+app.UseMiddleware<ResponseMiddleware>();
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
