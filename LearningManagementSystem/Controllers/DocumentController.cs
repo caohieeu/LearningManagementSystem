@@ -33,8 +33,12 @@ namespace LearningManagementSystem.Controllers
 
             try
             {
-                await _documentService.PostFileAsync(fileDetails.FileDetails, fileDetails.FileType, type);
-                return Ok();
+                return Ok(new ResponseEntity
+                {
+                    code = ErrorCode.NoError.GetErrorInfo().code,
+                    message = ErrorCode.NoError.GetErrorInfo().message,
+                    data = await _documentService.PostFileAsync(fileDetails.FileDetails, fileDetails.FileType, type)
+                });
             }
             catch (Exception)
             {
@@ -91,6 +95,16 @@ namespace LearningManagementSystem.Controllers
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()
+        {
+            return Ok(new ResponseEntity
+            {
+                code = ErrorCode.NoError.GetErrorInfo().code,
+                message = ErrorCode.NoError.GetErrorInfo().message,
+                data = await _documentService.GetAllDocument()
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddDocument()
         {
             return Ok(new ResponseEntity
             {

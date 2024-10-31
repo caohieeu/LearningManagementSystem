@@ -8,9 +8,10 @@ namespace LearningManagementSystem.Dtos.Request
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public IFormFile FileDetails { get; set; }
-        public FileType FileType { get; set; }
-        public int DocumentId { get; set; }
-        public string ClassId { get; set; }
+        public bool Status {  get; set; }
+        public string type { get; set; }
+        public int TitleId { get; set; }
+        public List<string> ListClassId { get; set; }
+        public List<int> ListDocumentId { get; set; }
     }
 }

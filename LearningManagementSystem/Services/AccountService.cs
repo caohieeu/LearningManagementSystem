@@ -5,6 +5,12 @@ using LearningManagementSystem.Repositories.IRepository;
 using LearningManagementSystem.Services.IService;
 using LearningManagementSystem.Utils;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 namespace LearningManagementSystem.Services
 {
@@ -12,12 +18,15 @@ namespace LearningManagementSystem.Services
     {
         private readonly IAccountRepository _accountRepository;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _config;
         public AccountService(
             IAccountRepository accountRepository,
-            IMapper mapper)
+            IMapper mapper,
+            IConfiguration config)
         {
             _accountRepository = accountRepository;
             _mapper = mapper;
+            _config = config;
         }
 
         public async Task<AuthResponseDto> SignInAsync(SignInDto model)
@@ -41,6 +50,44 @@ namespace LearningManagementSystem.Services
             }
 
             return listUserResponse;
+        }
+
+        public async Task<IntrospectResponseDto> GetInfoUser(string token)
+        {
+            var tokenInfo = _accountRepository.GetTokenInfo(token);
+            string expiredDate, username;
+
+            IntrospectResponseDto response = new IntrospectResponseDto
+            {
+                Valid = false,
+                User = null
+            };
+
+            if (tokenInfo == null || !tokenInfo.TryGetValue("exp", out expiredDate))
+            {
+                return response;
+            }
+
+            DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(expiredDate));
+            DateTime dateTime = dateTimeOffset.UtcDateTime;
+            if (dateTime < DateTime.UtcNow)
+            {
+                response.Valid = true;
+
+                if (tokenInfo.TryGetValue("UserName", out username))
+                {
+                    response.User = await _accountRepository.GetByUsername(username);
+                }
+
+                return response;
+            }
+
+            return response;
+        }
+
+        public bool CheckToken(string token)
+        {
+            return true;
         }
     }
 }

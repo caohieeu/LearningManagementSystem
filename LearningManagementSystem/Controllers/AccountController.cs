@@ -1,9 +1,9 @@
 ﻿using LearningManagementSystem.Dtos;
+using LearningManagementSystem.Dtos.Request;
 using LearningManagementSystem.Services.IService;
 using LearningManagementSystem.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace LearningManagementSystem.Controllers
 {
@@ -51,5 +51,23 @@ namespace LearningManagementSystem.Controllers
                 data = await _accountService.GetAllUser()
             };
         }
+        [HttpGet("GetInfo")]
+        public async Task<IActionResult> GetInfo([FromQuery] string token)
+        {
+            var result = await _accountService.GetInfoUser(token);
+            var response = new ResponseEntity()
+            {
+                code = ErrorCode.NoError.GetErrorInfo().code,
+                message = ErrorCode.NoError.GetErrorInfo().message,
+                data = await _accountService.GetInfoUser(token)
+            };
+
+            if (!result.Valid)
+            {
+                return Unauthorized(response);
+            }
+            return Ok(response);
+        }
+
     }
 }

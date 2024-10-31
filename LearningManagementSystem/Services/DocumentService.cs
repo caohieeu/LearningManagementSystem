@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LearningManagementSystem.DAL;
 using LearningManagementSystem.Dtos;
+using LearningManagementSystem.Dtos.Request;
 using LearningManagementSystem.Models;
 using LearningManagementSystem.Repositories.IRepository;
 using LearningManagementSystem.Services.IService;
@@ -23,7 +24,7 @@ namespace LearningManagementSystem.Services
             _context = context;
             _mapper = mapper;
         }
-        public async Task PostFileAsync(IFormFile fileData, FileType fileType, string type)
+        public async Task<Document> PostFileAsync(IFormFile fileData, FileType fileType, string type)
         {
             try
             {
@@ -42,12 +43,14 @@ namespace LearningManagementSystem.Services
 
                 using (var stream = new MemoryStream())
                 {
-                    fileData.CopyTo(stream);
+                    await fileData.CopyToAsync(stream);
                     document.FileData = stream.ToArray();
                 }
 
                 var result = _context.Documents.Add(document);
                 await _context.SaveChangesAsync();
+
+                return document;
             }
             catch (Exception)
             {
@@ -63,7 +66,6 @@ namespace LearningManagementSystem.Services
                 {
                     var fileDetails = new Document()
                     {
-                        Id = 0,
                         FileName = file.FileDetails.FileName,
                         FileType = file.FileType,
                     };
@@ -115,6 +117,11 @@ namespace LearningManagementSystem.Services
         public async Task<IEnumerable<Document>> GetAllDocument()
         {
             return await _documentRepository.GetAll();
+        }
+
+        public Task<bool> AddDocument(DocumentRequestDto document)
+        {
+            return null;
         }
     }
 }

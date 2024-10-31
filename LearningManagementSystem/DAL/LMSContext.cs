@@ -18,6 +18,7 @@ namespace LearningManagementSystem.DAL
         public DbSet<Title> Titles { get; set; }
         public DbSet<Classes> Classes { get; set; }
         public DbSet<DocumentLession> DocumentLessions { get; set; }
+        public DbSet<Lession> Lessions { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
 

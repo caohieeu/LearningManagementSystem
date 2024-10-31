@@ -10,5 +10,7 @@ namespace LearningManagementSystem.Repositories.IRepository
     {
         Task<IdentityResult> SignUpAsync(SignUpDto model);
         Task<AuthResponseDto> SignInAsync(SignInDto model);
+        Dictionary<string, string> GetTokenInfo(string token);
+        Task<UserResponseDto> GetByUsername(string username);
     }
 }

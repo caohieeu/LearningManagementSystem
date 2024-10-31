@@ -217,8 +217,9 @@ namespace LearningManagementSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Name")
-                        .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
@@ -232,7 +233,7 @@ namespace LearningManagementSystem.Migrations
 
                     b.HasIndex("TitleId");
 
-                    b.ToTable("Lession");
+                    b.ToTable("Lessions");
                 });
 
             modelBuilder.Entity("LearningManagementSystem.Models.Subject", b =>

@@ -44,7 +44,7 @@ namespace LearningManagementSystem.Services
             {
                 throw new NotFoundException("Không tìm thấy subject id");
             }
-            return await _titleRepository.Add(_mapper.Map<Title>(title));
+            return true;
         }
         public async Task<bool> UpdateTitle(TitleRequestDto title, int id)
         {
