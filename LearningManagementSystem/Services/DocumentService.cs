@@ -2,11 +2,13 @@
 using LearningManagementSystem.DAL;
 using LearningManagementSystem.Dtos;
 using LearningManagementSystem.Dtos.Request;
+using LearningManagementSystem.Exceptions;
 using LearningManagementSystem.Models;
 using LearningManagementSystem.Repositories.IRepository;
 using LearningManagementSystem.Services.IService;
 using LearningManagementSystem.Utils;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace LearningManagementSystem.Services
 {
@@ -15,19 +17,28 @@ namespace LearningManagementSystem.Services
         private readonly IDocumentRepository _documentRepository;
         private readonly LMSContext _context;
         private readonly IMapper _mapper;
+        private readonly IAccountService _accountService;
+        private readonly IUserContext _userContext;
         public DocumentService(
             IDocumentRepository documentRepository,
             LMSContext context,
-            IMapper mapper)
+            IMapper mapper,
+            IAccountService accountService,
+            IUserContext userContext)
         {
             _documentRepository = documentRepository;
             _context = context;
             _mapper = mapper;
+            _accountService = accountService;
+            _userContext = userContext;
         }
-        public async Task<Document> PostFileAsync(IFormFile fileData, FileType fileType, string type)
+        public async Task<Document> PostFileAsync(IFormFile fileData, FileType fileType, 
+            string type)
         {
             try
             {
+                var currentUser = await _userContext.GetCurrentUserInfo();
+
                 var document = new Document()
                 {
                     FileName = fileData.FileName,
@@ -35,10 +46,12 @@ namespace LearningManagementSystem.Services
                     Size = fileData.Length,
                     LastUpdate = DateTime.Now,
                     Type = type,
-                    Approver = "Cao Hiếu",
+                    Approver = "",
                     SentDate = DateTime.Now,
-                    Status = "Đang chờ",
+                    Status = "chờ phê duyệt",    
                     IsAprroved = false,
+                    CreatedBy = currentUser.FullName,
+                    EditBy = currentUser.FullName,
                 };
 
                 using (var stream = new MemoryStream())
@@ -119,9 +132,140 @@ namespace LearningManagementSystem.Services
             return await _documentRepository.GetAll();
         }
 
-        public Task<bool> AddDocument(DocumentRequestDto document)
+        public async Task<Document> UpdateName(int id, string name)
         {
-            return null;
+            try
+            {
+                var document = await _documentRepository.GetById(id);
+
+                if (document == null)
+                {
+                    throw new NotFoundException("Không tìm thấy tài nguyên");
+                }
+
+                document.FileName = name;
+                document.LastUpdate = DateTime.Now;
+                document.EditBy = await _userContext.GetFullName();
+
+                await _documentRepository.Update(document);
+
+                return document;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> RemoveDocument(int id)
+        {
+            try
+            {
+                var document = await _documentRepository.GetById(id);
+
+                if(document == null)
+                {
+                    throw new NotFoundException("Không tìm thấy tài nguyên");
+                }
+
+                await _documentRepository.Remove(document);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> ApproveDocument(int id)
+        {
+            try
+            {
+                var document = await _documentRepository.GetById(id);
+
+                if (document == null)
+                {
+                    throw new NotFoundException("Không tìm thấy tài nguyên");
+                }
+
+                document.IsAprroved = true;
+                document.Approver = await _userContext.GetFullName();
+                document.LastUpdate = DateTime.Now;
+                document.EditBy = await _userContext.GetFullName();
+                document.Status = "Đã phê duyệt";
+
+                await _documentRepository.Update(document);
+                return true;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<Document>> GetDocumentBySubject(string subjectId)
+        {
+            return await _documentRepository.GetDocumentBySubject(subjectId);
+        }
+
+        public async Task<bool> InsertNewResource(DocumentRequestDto document)
+        {
+            try
+            {
+                int documentInsert;
+                if (document.FileUpload != null)
+                {
+                    var docInfo = await PostFileAsync(document.FileUpload.FileDetails, document.FileUpload.FileType, "tai-nguyen");
+                    documentInsert = docInfo.Id;
+                }
+                else
+                {
+                    documentInsert = document.DocumentId;
+                }
+                _context.DocumentLessions.Add(new DocumentLession
+                {
+                    DocumentId = documentInsert,
+                    LessionId = document.LessionId,
+                });
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<Document>> FindDocumentByName(string documentName)
+        {
+            return await _documentRepository.FindDocumentByName(documentName);
+        }
+
+        public async Task<bool> CancelApproveDocument(int documentId)
+        {
+            try
+            {
+                var document = await _documentRepository.GetById(documentId);
+
+                if (document == null)
+                {
+                    throw new NotFoundException("Không tìm thấy tài nguyên");
+                }
+
+                document.IsAprroved = true;
+                document.Approver = await _userContext.GetFullName();
+                document.LastUpdate = DateTime.Now;
+                document.EditBy = await _userContext.GetFullName();
+                document.Status = "Đã hủy";
+
+                await _documentRepository.Update(document);
+                return true;
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

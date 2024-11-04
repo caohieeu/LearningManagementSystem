@@ -14,14 +14,17 @@ namespace LearningManagementSystem.Services
         private readonly ISubjectRepository _subjectRepository;
         private readonly LMSContext _context;
         private readonly IMapper _mapper;
+        private readonly IDocumentService _documentService;
         public SubjectService(
             ISubjectRepository subjectRepository,
             LMSContext context,
-            IMapper mapper)
+            IMapper mapper,
+            IDocumentService documentService)
         {
             _subjectRepository = subjectRepository;
             _context = context;
             _mapper = mapper;
+            _documentService = documentService;
         }
         public async Task<string> GenerateNewId()
         {
@@ -64,7 +67,11 @@ namespace LearningManagementSystem.Services
             foreach(var item in listSubject)
             {
                 SubjectResponseDto subject = _mapper.Map<SubjectResponseDto>(item);
-                subject.Teacher = item.Teacher.FullName;
+                var docBySubject = await _documentService.GetDocumentBySubject(item.Id);
+                var docAwait = docBySubject.Where(x => !x.IsAprroved).ToList();
+                int cntDocAwait = docAwait.Count;
+                subject.Department = item.Department.Name;
+                subject.DocAwaitAprrove = cntDocAwait;
                 subjectsResponse.Add(subject);
             }
             return subjectsResponse;

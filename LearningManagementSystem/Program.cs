@@ -42,7 +42,7 @@ builder.Services.AddSwaggerGen(options =>
                     Id="Bearer"
                 }
             },
-            new string[]{}
+            Array.Empty<string>()
         }
     });
 });
@@ -97,12 +97,17 @@ builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
 builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
 builder.Services.AddScoped<ILessionRepository, LessionRepository>();
 builder.Services.AddScoped<ITitleRepository, TitleRepository>();
+builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<ITitleService, TitleService>();
 builder.Services.AddScoped<ILessionService, LessionService>();
+builder.Services.AddScoped<IQuestionService, QuestionService>();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserContext, UserContext>();
 
 var app = builder.Build();
 
@@ -123,5 +128,17 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+//seed data
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<LMSContext>();
+    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+    var seedData = new SeedData(userManager, roleManager);
+    await seedData.SeedingData(context);
+}
 
 app.Run();

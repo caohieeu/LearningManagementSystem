@@ -1,4 +1,6 @@
-﻿using LearningManagementSystem.DAL;
+﻿using AutoMapper;
+using LearningManagementSystem.DAL;
+using LearningManagementSystem.Dtos;
 using LearningManagementSystem.Dtos.Request;
 using LearningManagementSystem.Dtos.Response;
 using LearningManagementSystem.Models;
@@ -14,16 +16,19 @@ namespace LearningManagementSystem.Services
         private readonly LMSContext _context;
         private readonly IDocumentService _documentService;
         private readonly IAccountService _accountService;
+        private readonly IMapper _mapper;
         public LessionService(
             ILessionRepository lessionRepository,
             LMSContext context,
             IDocumentService documentService,
-            IAccountService accountService)
+            IAccountService accountService,
+            IMapper mapper)
         {
             _lessionRepository = lessionRepository;
             _context = context;
             _documentService = documentService;
             _accountService = accountService;
+            _mapper = mapper;
         }
         public Lession SaveLession(Lession lession)
         {
@@ -81,6 +86,13 @@ namespace LearningManagementSystem.Services
         public async Task<LessionResponseDto> GetByTitleAndClass(int titleId, string classId)
         {
             return await _lessionRepository.GetByTitleAndClass(titleId, classId);
+        }
+
+        public async Task<List<LessionDto>> GetAllLession()
+        {
+            var listLession = await _lessionRepository.GetAll();
+            var result = listLession.Select(x => _mapper.Map<LessionDto>(x));
+            return result.ToList();
         }
     }
 }

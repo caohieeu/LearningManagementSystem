@@ -13,12 +13,14 @@ namespace LearningManagementSystem.DAL
         }
         public DbSet<ApplicationUser> Users { get; set; }
         public DbSet<Subject> Subjects { get; set; }
+        public DbSet<UserSubjects> UserSubjects { get; set; }
         public DbSet<AcademicYear> AcademicYears { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<Title> Titles { get; set; }
         public DbSet<Classes> Classes { get; set; }
         public DbSet<DocumentLession> DocumentLessions { get; set; }
         public DbSet<Lession> Lessions { get; set; }
+        public DbSet<Question> Questions { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
 
@@ -26,6 +28,21 @@ namespace LearningManagementSystem.DAL
 
             builder.Entity<DocumentLession>()
                 .HasKey(dl => new { dl.DocumentId, dl.LessionId });
+
+            builder.Entity<UserSubjects>()
+                .HasKey(dl => new { dl.UserId, dl.SubjectId });
+
+            builder.Entity<ApplicationUser>()
+                .HasOne(u => u.Department)
+                .WithMany()
+                .HasForeignKey(u => u.DepartmentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Subject>()
+                .HasOne(s => s.Department)
+                .WithMany()
+                .HasForeignKey(s => s.DepartmentId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             //builder.Entity<Document>()
             //    .HasOne(u => u.FileDetails)

@@ -22,5 +22,7 @@ namespace LearningManagementSystem.Dtos
         public string Address { get; set; }
         [Required]
         public string Role { get; set; }
+        [Required]
+        public string DepartmentId { get; set; }
     }
 }

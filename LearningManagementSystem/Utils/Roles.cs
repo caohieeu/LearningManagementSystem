@@ -2,8 +2,8 @@
 {
     public static class Roles
     {
-        public static string LeaderShip = "LeaderShip";
+        public const string LeaderShip = "LeaderShip";
         public const string Teacher = "Teacher";
-        public static string Student = "Student";
+        public const string Student = "Student";
     }
 }

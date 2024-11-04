@@ -38,7 +38,7 @@ public class ResponseMiddleware
                 {
                     code = ErrorCode.NotFound.GetErrorInfo().code,
                     message = ex.Message,
-                    data = null
+                    data = Array.Empty<string>(),
                 };
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 break;
@@ -46,6 +46,15 @@ public class ResponseMiddleware
                 response = new ResponseEntity()
                 {
                     code = ErrorCode.NotFound.GetErrorInfo().code,
+                    message = ex.Message,
+                    data = Array.Empty<string>()
+                };
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                break;
+            case AuthorizationException _:
+                response = new ResponseEntity()
+                {
+                    code = ErrorCode.Unauthorized.GetErrorInfo().code,
                     message = ex.Message,
                     data = null
                 };

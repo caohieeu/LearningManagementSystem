@@ -18,7 +18,7 @@ namespace LearningManagementSystem.Repositories
         {
             return await _context.Set<Subject>()
                 .AsQueryable()
-                .Include(p => p.Teacher)
+                .Include(p => p.Department)
                 .ToListAsync();
         }
 

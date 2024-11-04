@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearningManagementSystem.Migrations
 {
     [DbContext(typeof(LMSContext))]
-    [Migration("20241030171434_changeTypeField")]
-    partial class changeTypeField
+    [Migration("20241103101702_updateDB")]
+    partial class updateDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -60,6 +60,10 @@ namespace LearningManagementSystem.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DepartmentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -115,6 +119,8 @@ namespace LearningManagementSystem.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DepartmentId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -140,6 +146,20 @@ namespace LearningManagementSystem.Migrations
                     b.ToTable("Classes");
                 });
 
+            modelBuilder.Entity("LearningManagementSystem.Models.Department", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Department");
+                });
+
             modelBuilder.Entity("LearningManagementSystem.Models.Document", b =>
                 {
                     b.Property<int>("Id")
@@ -149,6 +169,14 @@ namespace LearningManagementSystem.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Approver")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EditBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -235,7 +263,7 @@ namespace LearningManagementSystem.Migrations
 
                     b.HasIndex("TitleId");
 
-                    b.ToTable("Lession");
+                    b.ToTable("Lessions");
                 });
 
             modelBuilder.Entity("LearningManagementSystem.Models.Subject", b =>
@@ -248,6 +276,10 @@ namespace LearningManagementSystem.Migrations
 
                     b.Property<DateTime>("DateOfSubmitForApprove")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("DepartmentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -265,15 +297,11 @@ namespace LearningManagementSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TeacherId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AcademicYearId");
 
-                    b.HasIndex("TeacherId");
+                    b.HasIndex("DepartmentId");
 
                     b.ToTable("Subjects");
                 });
@@ -302,6 +330,21 @@ namespace LearningManagementSystem.Migrations
                     b.HasIndex("SubjectId");
 
                     b.ToTable("Titles");
+                });
+
+            modelBuilder.Entity("LearningManagementSystem.Models.UserSubjects", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SubjectId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "SubjectId");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("UserSubjects");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -437,6 +480,17 @@ namespace LearningManagementSystem.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("LearningManagementSystem.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("LearningManagementSystem.Models.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+                });
+
             modelBuilder.Entity("LearningManagementSystem.Models.DocumentLession", b =>
                 {
                     b.HasOne("LearningManagementSystem.Models.Document", "Document")
@@ -483,15 +537,15 @@ namespace LearningManagementSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LearningManagementSystem.Models.ApplicationUser", "Teacher")
+                    b.HasOne("LearningManagementSystem.Models.Department", "Department")
                         .WithMany()
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("AcademicYear");
 
-                    b.Navigation("Teacher");
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("LearningManagementSystem.Models.Title", b =>
@@ -501,6 +555,25 @@ namespace LearningManagementSystem.Migrations
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Subject");
+                });
+
+            modelBuilder.Entity("LearningManagementSystem.Models.UserSubjects", b =>
+                {
+                    b.HasOne("LearningManagementSystem.Models.Subject", "Subject")
+                        .WithMany()
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LearningManagementSystem.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
 
                     b.Navigation("Subject");
                 });

@@ -17,6 +17,8 @@ namespace LearningManagementSystem.Models
         public string Approver { get; set; }
         public string Status { get; set; }
         public DateTime SentDate { get; set; }
+        public string CreatedBy { get; set; }
+        public string EditBy { get; set; }
         public bool IsAprroved { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using LearningManagementSystem.Dtos;
+﻿using LearningManagementSystem.DAL;
+using LearningManagementSystem.Dtos;
 using LearningManagementSystem.Dtos.Request;
 using LearningManagementSystem.Services.IService;
 using LearningManagementSystem.Utils;
@@ -12,9 +13,11 @@ namespace LearningManagementSystem.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
-        public AccountController(IAccountService accountService)
+        private readonly IUserContext _userContext;
+        public AccountController(IAccountService accountService, IUserContext userContext)
         {
             _accountService = accountService;
+            _userContext = userContext;
         }
         [HttpPost("SignUp")]
         public Task<IdentityResult> SignUpAsync([FromBody] SignUpDto signUpDto)
@@ -52,14 +55,14 @@ namespace LearningManagementSystem.Controllers
             };
         }
         [HttpGet("GetInfo")]
-        public async Task<IActionResult> GetInfo([FromQuery] string token)
+        public async Task<IActionResult> GetInfo()
         {
-            var result = await _accountService.GetInfoUser(token);
+            var result = await _userContext.GetCurrentInforUser();
             var response = new ResponseEntity()
             {
                 code = ErrorCode.NoError.GetErrorInfo().code,
                 message = ErrorCode.NoError.GetErrorInfo().message,
-                data = await _accountService.GetInfoUser(token)
+                data = await _userContext.GetCurrentInforUser()
             };
 
             if (!result.Valid)

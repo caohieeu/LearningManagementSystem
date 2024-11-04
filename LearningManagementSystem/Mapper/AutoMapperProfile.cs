@@ -15,6 +15,8 @@ namespace LearningManagementSystem.Mapper
             CreateMap<UserResponseDto, ApplicationUser>().ReverseMap();
             CreateMap<TitleResponseDto, Title>().ReverseMap();
             CreateMap<TitleRequestDto, Title>().ReverseMap();
+            CreateMap<LessionDto, Lession>().ReverseMap();
+            CreateMap<QuestionRequestDto, Question>().ReverseMap();
         }
     }
 }

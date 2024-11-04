@@ -18,14 +18,13 @@ namespace LearningManagementSystem.Controllers
             _lessionService = lessionService;
         }
         [HttpGet]
-        [Authorize(Roles = Utils.Roles.Teacher)]
         public async Task<IActionResult> GetAllLession()
         {
             return Ok(new ResponseEntity
             {
                 code = 200,
                 message = "Thực hiện thành công",
-                data = null
+                data = await _lessionService.GetAllLession()
             });
         }
         [HttpGet("GetByTitleAndClass")]

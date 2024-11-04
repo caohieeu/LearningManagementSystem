@@ -125,6 +125,7 @@ namespace LearningManagementSystem.Repositories
                 PhoneNumber = model.PhoneNumber,
                 Address = model.Address,
                 Gender = model.Gender,
+                DepartmentId = model.DepartmentId
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);

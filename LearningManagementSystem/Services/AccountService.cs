@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LearningManagementSystem.DAL;
 using LearningManagementSystem.Dtos;
 using LearningManagementSystem.Dtos.Response;
 using LearningManagementSystem.Repositories.IRepository;
@@ -19,6 +20,7 @@ namespace LearningManagementSystem.Services
         private readonly IAccountRepository _accountRepository;
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
+        //private readonly IUserContext _userContext;
         public AccountService(
             IAccountRepository accountRepository,
             IMapper mapper,
@@ -27,6 +29,7 @@ namespace LearningManagementSystem.Services
             _accountRepository = accountRepository;
             _mapper = mapper;
             _config = config;
+            //_userContext = userContext;
         }
 
         public async Task<AuthResponseDto> SignInAsync(SignInDto model)

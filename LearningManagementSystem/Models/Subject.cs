@@ -10,9 +10,6 @@ namespace LearningManagementSystem.Models
             ErrorMessage = "Mã môn học phải bắt đầu bằng #KDL")]
         public string Id { get; set; }
         public string Name { get; set; }
-        public string TeacherId { get; set; }
-        [ForeignKey("TeacherId")]
-        public ApplicationUser Teacher { get; set; } = null!;
         public string Description { get; set; } = string.Empty;
         public DateTime DateOfSubmitForApprove { get; set; }
         public string StatusOfSubjectDoc { get; set; } = string.Empty;
@@ -21,5 +18,7 @@ namespace LearningManagementSystem.Models
         public int AcademicYearId { get; set; }
         [ForeignKey("AcademicYearId")]
         public AcademicYear AcademicYear { get; set; } = null!;
+        public string DepartmentId { get; set; }
+        public Department Department { get; set; }
     }
 }

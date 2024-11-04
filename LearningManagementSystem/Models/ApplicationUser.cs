@@ -10,5 +10,7 @@ namespace LearningManagementSystem.Models
         public string Gender { get; set; }
         public string ImagePath { get; set; } = string.Empty;
         public string Address { get; set; }
+        public string DepartmentId { get; set; }
+        public Department Department { get; set; }
     }
 }

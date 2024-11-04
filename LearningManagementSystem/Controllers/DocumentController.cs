@@ -1,6 +1,8 @@
 ﻿using LearningManagementSystem.Dtos;
+using LearningManagementSystem.Dtos.Request;
 using LearningManagementSystem.Services.IService;
 using LearningManagementSystem.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Protocols;
@@ -33,6 +35,12 @@ namespace LearningManagementSystem.Controllers
 
             try
             {
+                var token = HttpContext.Request.Headers["Authorization"].ToString();
+
+                if (!string.IsNullOrEmpty(token) && token.StartsWith("Bearer "))
+                {
+                    token = token.Substring("Bearer ".Length).Trim();
+                }
                 return Ok(new ResponseEntity
                 {
                     code = ErrorCode.NoError.GetErrorInfo().code,
@@ -103,14 +111,78 @@ namespace LearningManagementSystem.Controllers
                 data = await _documentService.GetAllDocument()
             });
         }
-        [HttpPost]
-        public async Task<IActionResult> AddDocument()
+        [HttpPut("{id}")]
+        [Authorize(Roles = Utils.Roles.Teacher)]
+        public async Task<IActionResult> UpdateDocument([FromRoute] int id, string name)
         {
             return Ok(new ResponseEntity
             {
                 code = ErrorCode.NoError.GetErrorInfo().code,
                 message = ErrorCode.NoError.GetErrorInfo().message,
-                data = await _documentService.GetAllDocument()
+                data = await _documentService.UpdateName(id, name)
+            });
+        }
+        [HttpDelete("{id}")]
+        [Authorize(Roles = Utils.Roles.Teacher)]
+        public async Task<IActionResult> DeleteDocument([FromRoute] int id)
+        {
+            return Ok(new ResponseEntity
+            {
+                code = ErrorCode.NoError.GetErrorInfo().code,
+                message = ErrorCode.NoError.GetErrorInfo().message,
+                data = await _documentService.RemoveDocument(id)
+            });
+        }
+        [Authorize(Roles = Utils.Roles.LeaderShip)]
+        [HttpPut("Approve/{DocumentId}")]
+        public async Task<IActionResult> ApproveDocument(int DocumentId)
+        {
+            return Ok(new ResponseEntity
+            {
+                code = ErrorCode.NoError.GetErrorInfo().code,
+                message = ErrorCode.NoError.GetErrorInfo().message,
+                data = await _documentService.ApproveDocument(DocumentId)
+            });
+        }
+        [Authorize(Roles = Utils.Roles.LeaderShip)]
+        [HttpPut("CancelApprove/{DocumentId}")]
+        public async Task<IActionResult> CancelApproveDocument(int DocumentId)
+        {
+            return Ok(new ResponseEntity
+            {
+                code = ErrorCode.NoError.GetErrorInfo().code,
+                message = ErrorCode.NoError.GetErrorInfo().message,
+                data = await _documentService.CancelApproveDocument(DocumentId)
+            });
+        }
+        [HttpGet("GetDocumentBySubject/{SubjectId}")]
+        public async Task<IActionResult> GetDocumentBySubject(string SubjectId)
+        {
+            return Ok(new ResponseEntity
+            {
+                code = ErrorCode.NoError.GetErrorInfo().code,
+                message = ErrorCode.NoError.GetErrorInfo().message,
+                data = await _documentService.GetDocumentBySubject(SubjectId)
+            });
+        }
+        [HttpPost("InsertNewResource")]
+        public async Task<IActionResult> InsertNewResource([FromForm]DocumentRequestDto document)
+        {
+            return Ok(new ResponseEntity
+            {
+                code = ErrorCode.NoError.GetErrorInfo().code,
+                message = ErrorCode.NoError.GetErrorInfo().message,
+                data = await _documentService.InsertNewResource(document)
+            });
+        }
+        [HttpGet("FindByName/{DocumentName}")]
+        public async Task<IActionResult> FindDocumentByName(string DocumentName)
+        {
+            return Ok(new ResponseEntity
+            {
+                code = ErrorCode.NoError.GetErrorInfo().code,
+                message = ErrorCode.NoError.GetErrorInfo().message,
+                data = await _documentService.FindDocumentByName(DocumentName)
             });
         }
     }
