@@ -2,10 +2,12 @@
 using LearningManagementSystem.DAL;
 using LearningManagementSystem.Dtos;
 using LearningManagementSystem.Dtos.Response;
+using LearningManagementSystem.Exceptions;
 using LearningManagementSystem.Repositories.IRepository;
 using LearningManagementSystem.Services.IService;
 using LearningManagementSystem.Utils;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.IdentityModel.Tokens;
@@ -20,16 +22,17 @@ namespace LearningManagementSystem.Services
         private readonly IAccountRepository _accountRepository;
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
-        //private readonly IUserContext _userContext;
+        private readonly LMSContext _context;
         public AccountService(
             IAccountRepository accountRepository,
             IMapper mapper,
-            IConfiguration config)
+            IConfiguration config,
+            LMSContext context)
         {
             _accountRepository = accountRepository;
             _mapper = mapper;
             _config = config;
-            //_userContext = userContext;
+            _context = context;
         }
 
         public async Task<AuthResponseDto> SignInAsync(SignInDto model)
@@ -91,6 +94,20 @@ namespace LearningManagementSystem.Services
         public bool CheckToken(string token)
         {
             return true;
+        }
+
+        public async Task<UserResponseDto> GetUserById(string id)
+        {
+            var user = await _context.Users
+                .Where(x => x.Id == id)
+                .FirstOrDefaultAsync();
+
+            if(user == null)
+            {
+                throw new NotFoundException("Không tìm thấy người dùng");
+            }
+
+            return _mapper.Map<UserResponseDto>(user);
         }
     }
 }

@@ -49,5 +49,12 @@ namespace LearningManagementSystem.DAL
 
             return response;
         }
+
+        public async Task<string> GetId()
+        {
+            var user = await GetCurrentUserInfo();
+
+            return user.Id;
+        }
     }
 }

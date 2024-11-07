@@ -1,14 +1,11 @@
 ﻿namespace LearningManagementSystem.Models
 {
-    public class Question
+    public class Favorite
     {
         public int Id { get; set; }
-        public string Title { get; set; }
-        public string Details { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public int Favorites {  get; set; }
-        public int LessionId { get; set; }
-        public Lession Lession { get; set; }
+        public int ItemId { get; set; }
+        public string ItemType { get; set; }
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
     }

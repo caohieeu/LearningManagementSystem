@@ -13,5 +13,6 @@ namespace LearningManagementSystem.Services.IService
         Task<List<UserResponseDto>> GetAllUser();
         bool CheckToken(string token);
         Task<IntrospectResponseDto> GetInfoUser(string token);
+        Task<UserResponseDto> GetUserById(string id);
     }
 }

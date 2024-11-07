@@ -6,6 +6,7 @@ namespace LearningManagementSystem.DAL
     {
         Task<UserResponseDto> GetCurrentUserInfo();
         Task<string> GetFullName();
+        Task<string> GetId();
         Task<IntrospectResponseDto> GetCurrentInforUser();
     }
 }

@@ -56,7 +56,14 @@ public class ResponseMiddleware
                 {
                     code = ErrorCode.Unauthorized.GetErrorInfo().code,
                     message = ex.Message,
-                    data = null
+                };
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                break;
+            case ArgumentNullException _:
+                response = new ResponseEntity()
+                {
+                    code = 404,
+                    message = ex.Message,
                 };
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 break;
@@ -65,7 +72,6 @@ public class ResponseMiddleware
                 {
                     code = 500,
                     message = "Internal Server Error",
-                    data = null
                 };
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 break;

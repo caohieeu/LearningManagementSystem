@@ -21,6 +21,8 @@ namespace LearningManagementSystem.DAL
         public DbSet<DocumentLession> DocumentLessions { get; set; }
         public DbSet<Lession> Lessions { get; set; }
         public DbSet<Question> Questions { get; set; }
+        public DbSet<Answer> Answers { get; set; }
+        public DbSet<Favorite> Favorites { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
 
@@ -42,6 +44,18 @@ namespace LearningManagementSystem.DAL
                 .HasOne(s => s.Department)
                 .WithMany()
                 .HasForeignKey(s => s.DepartmentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Question>()
+                .HasOne(s => s.User)
+                .WithMany()
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Answer>()
+                .HasOne(s => s.User)
+                .WithMany()
+                .HasForeignKey(s => s.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             //builder.Entity<Document>()

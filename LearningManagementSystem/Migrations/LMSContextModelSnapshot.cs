@@ -43,6 +43,44 @@ namespace LearningManagementSystem.Migrations
                     b.ToTable("AcademicYears");
                 });
 
+            modelBuilder.Entity("LearningManagementSystem.Models.Answer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsShow")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Answers");
+                });
+
             modelBuilder.Entity("LearningManagementSystem.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -229,6 +267,35 @@ namespace LearningManagementSystem.Migrations
                     b.ToTable("DocumentLessions");
                 });
 
+            modelBuilder.Entity("LearningManagementSystem.Models.Favorite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ItemType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Favorites");
+                });
+
             modelBuilder.Entity("LearningManagementSystem.Models.Lession", b =>
                 {
                     b.Property<int>("Id")
@@ -279,6 +346,9 @@ namespace LearningManagementSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Favorites")
+                        .HasColumnType("int");
+
                     b.Property<int>("LessionId")
                         .HasColumnType("int");
 
@@ -286,9 +356,15 @@ namespace LearningManagementSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("LessionId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Questions");
                 });
@@ -507,6 +583,25 @@ namespace LearningManagementSystem.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("LearningManagementSystem.Models.Answer", b =>
+                {
+                    b.HasOne("LearningManagementSystem.Models.Question", "Question")
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LearningManagementSystem.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("LearningManagementSystem.Models.ApplicationUser", b =>
                 {
                     b.HasOne("LearningManagementSystem.Models.Department", "Department")
@@ -537,6 +632,17 @@ namespace LearningManagementSystem.Migrations
                     b.Navigation("Lession");
                 });
 
+            modelBuilder.Entity("LearningManagementSystem.Models.Favorite", b =>
+                {
+                    b.HasOne("LearningManagementSystem.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("LearningManagementSystem.Models.Lession", b =>
                 {
                     b.HasOne("LearningManagementSystem.Models.Classes", "Classes")
@@ -564,7 +670,15 @@ namespace LearningManagementSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("LearningManagementSystem.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Lession");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("LearningManagementSystem.Models.Subject", b =>
