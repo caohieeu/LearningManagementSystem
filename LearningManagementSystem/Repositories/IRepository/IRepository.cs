@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using LearningManagementSystem.Utils.Pagination;
+using System.Linq.Expressions;
 
 namespace LearningManagementSystem.Repositories.IRepository
 {
@@ -22,5 +23,6 @@ namespace LearningManagementSystem.Repositories.IRepository
         Task<bool> Remove(T entity);
         Task<bool> RemoveRange(IEnumerable<T> entities);
         Task<bool> Update(T entity);
+        Task<PagedResult<T>> GetPagedDataAsync(PaginationParams paginationParams);
     }
 }

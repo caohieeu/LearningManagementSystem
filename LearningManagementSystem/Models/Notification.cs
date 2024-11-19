@@ -2,12 +2,14 @@
 
 namespace LearningManagementSystem.Models
 {
-    public class Nofification
+    public class Notification
     {
         [Key]
         public int Id { get; set; }
-        public int Title { get; set; }
-        public int Detail { get; set; }
+        public string Title { get; set; }
+        public string Detail { get; set; }
+        public string Name { get; set; }
+        public bool IsReaded { get; set; }
         public DateTime DateCreated { get; set; } = DateTime.Now;
     }
 }

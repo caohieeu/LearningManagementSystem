@@ -4,6 +4,6 @@
     {
         PDF = 1,
         DOCX = 2,
-        MP4 = 3,
+        Video = 3,
     }
 }

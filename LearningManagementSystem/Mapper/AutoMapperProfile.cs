@@ -20,6 +20,7 @@ namespace LearningManagementSystem.Mapper
             CreateMap<AnswerRequestDto, Answer>().ReverseMap();
             CreateMap<AnswerResponseDto, Answer>().ReverseMap();
             CreateMap<QuestionResponseDto, Question>().ReverseMap();
+            CreateMap<NotificationResponseDto, Notification>().ReverseMap();
         }
     }
 }

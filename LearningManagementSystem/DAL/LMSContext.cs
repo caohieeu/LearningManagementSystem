@@ -23,6 +23,8 @@ namespace LearningManagementSystem.DAL
         public DbSet<Question> Questions { get; set; }
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<UserNotification> UserNotifications { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
 
@@ -33,6 +35,9 @@ namespace LearningManagementSystem.DAL
 
             builder.Entity<UserSubjects>()
                 .HasKey(dl => new { dl.UserId, dl.SubjectId });
+
+            builder.Entity<UserNotification>()
+                .HasKey(dl => new { dl.UserId, dl.NotificationId });
 
             builder.Entity<ApplicationUser>()
                 .HasOne(u => u.Department)

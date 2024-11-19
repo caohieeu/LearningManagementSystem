@@ -1,5 +1,7 @@
 ﻿using LearningManagementSystem.DAL;
 using LearningManagementSystem.Repositories.IRepository;
+using LearningManagementSystem.Utils.Pagination;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -96,6 +98,18 @@ namespace LearningManagementSystem.Repositories
             {
                 return false;
             }
+        }
+        public async Task<PagedResult<T>> GetPagedDataAsync(PaginationParams paginationParams)
+        {
+            var query = _context.Set<T>().AsQueryable();
+
+            int totalItems = await query.CountAsync();
+            var items = await query
+                .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                .Take(paginationParams.PageSize)
+                .ToListAsync();
+
+            return new PagedResult<T>(items, totalItems, paginationParams.PageNumber, paginationParams.PageSize);
         }
     }
 }

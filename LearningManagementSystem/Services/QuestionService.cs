@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using LearningManagementSystem.DAL;
+using LearningManagementSystem.Dtos;
 using LearningManagementSystem.Dtos.Request;
 using LearningManagementSystem.Dtos.Response;
 using LearningManagementSystem.Exceptions;
 using LearningManagementSystem.Models;
 using LearningManagementSystem.Repositories.IRepository;
 using LearningManagementSystem.Services.IService;
+using LearningManagementSystem.Utils.Pagination;
 using Microsoft.AspNetCore.DataProtection.XmlEncryption;
 
 namespace LearningManagementSystem.Services
@@ -28,9 +30,8 @@ namespace LearningManagementSystem.Services
             _favoriteService = favoriteService;
         }
 
-        public async Task<List<QuestionResponseDto>> GetQuestionsBySubject(int LessionId)
-        {   
-            var questions = await _questionRepository.GetQuestionsBySubject(LessionId);
+       async Task<List<QuestionResponseDto>> ReturnQuestion(List<Question> questions)
+        {
             var result = new List<QuestionResponseDto>();
             foreach (var question in questions)
             {
@@ -41,6 +42,31 @@ namespace LearningManagementSystem.Services
             }
 
             return result;
+        }
+
+        public async Task<PagedResult<QuestionResponseDto>> GetQuestionByFilter(FilterQuestionDto filter, PaginationParams paginationParams)
+        {
+            var questions = await _questionRepository.GetQuestionByFilter(filter, paginationParams);
+
+            var result = new PagedResult<QuestionResponseDto>(
+                new List<QuestionResponseDto>(), questions.TotalItems, 
+                questions.PageNumber, questions.PageSize);
+            foreach (var question in questions.Items)
+            {
+                var item = _mapper.Map<QuestionResponseDto>(question);
+                item.Favorites = await _favoriteService.GetFavoriteByItem(item.Id, Utils.TypeQA.question);
+
+                result.Items.Add(item);
+            }
+
+            return result;
+        }
+
+        public async Task<List<QuestionResponseDto>> GetQuestionsByLession(int LessionId)
+        {   
+            var questions = await _questionRepository.GetQuestionsByLession(LessionId);
+
+            return await ReturnQuestion(questions);
         }
 
         public async Task<List<QuestionResponseDto>> GetQuestionsByTitleName(string title)

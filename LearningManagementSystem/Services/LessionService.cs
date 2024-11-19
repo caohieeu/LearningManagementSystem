@@ -40,8 +40,6 @@ namespace LearningManagementSystem.Services
         {
             try
             {
-                //var user = _accountService.GetInfoUser(token);
-
                 foreach (var item in lessionRequest.ListClassId)
                 {
                     var lession = new Lession

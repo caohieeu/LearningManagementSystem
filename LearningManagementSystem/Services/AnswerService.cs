@@ -58,7 +58,7 @@ namespace LearningManagementSystem.Services
             {
                 var answerResponse = _mapper.Map<AnswerResponseDto>(answer);
                 answerResponse.FavoriteQuantity = 
-                    await _favoriteService.GetFavoriteByItem(questionId, Utils.TypeQA.answer);
+                    await _favoriteService.GetFavoriteByItem(answerResponse.Id, Utils.TypeQA.answer);
                 answerResponse.User = await _accountService.GetUserById(answer.UserId);
 
                 response.Add(answerResponse);
