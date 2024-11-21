@@ -25,6 +25,10 @@ namespace LearningManagementSystem.DAL
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<UserNotification> UserNotifications { get; set; }
+        public DbSet<Examination> Examinations { get; set; }
+        public DbSet<QuestionExam> QuestionExams { get; set; }
+        public DbSet<AnswerExam> AnswerExams { get; set; }
+        public DbSet<ExaminationQuestion> ExaminationQuestions { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
 
@@ -38,6 +42,9 @@ namespace LearningManagementSystem.DAL
 
             builder.Entity<UserNotification>()
                 .HasKey(dl => new { dl.UserId, dl.NotificationId });
+
+            builder.Entity<ExaminationQuestion>()
+               .HasKey(dl => new { dl.ExaminationId, dl.QuestionExamId });
 
             builder.Entity<ApplicationUser>()
                 .HasOne(u => u.Department)

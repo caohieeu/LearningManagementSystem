@@ -51,13 +51,6 @@ namespace LearningManagementSystem.Controllers
         [Authorize(Roles = Utils.Roles.Teacher)]
         public async Task<IActionResult> AddLession([FromForm] LessionRequestDto lession, [FromForm] FileUploadDto fileDetails)
         {
-            //var token = HttpContext.Request.Headers["Authorization"].ToString();
-
-            //if (!string.IsNullOrEmpty(token) && token.StartsWith("Bearer "))
-            //{
-            //    token = token.Substring("Bearer ".Length).Trim();
-            //}
-
             return Ok(new ResponseEntity
             {
                 code = 200,

@@ -4,13 +4,13 @@
 
 namespace LearningManagementSystem.Migrations
 {
-    public partial class addFieldName : Migration
+    public partial class addSubjectId : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Name",
-                table: "Notifications",
+                name: "SubjectId",
+                table: "QuestionExams",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
@@ -19,8 +19,8 @@ namespace LearningManagementSystem.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Name",
-                table: "Notifications");
+                name: "SubjectId",
+                table: "QuestionExams");
         }
     }
 }

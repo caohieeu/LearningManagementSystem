@@ -81,6 +81,34 @@ namespace LearningManagementSystem.Migrations
                     b.ToTable("Answers");
                 });
 
+            modelBuilder.Entity("LearningManagementSystem.Models.AnswerExam", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("AnswerText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuestionExamId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionExamId");
+
+                    b.ToTable("AnswerExams");
+                });
+
             modelBuilder.Entity("LearningManagementSystem.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -267,6 +295,65 @@ namespace LearningManagementSystem.Migrations
                     b.ToTable("DocumentLessions");
                 });
 
+            modelBuilder.Entity("LearningManagementSystem.Models.Examination", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CreateBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan>("Duration")
+                        .HasColumnType("time");
+
+                    b.Property<string>("FormExam")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsApprove")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SubjectId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("Examinations");
+                });
+
+            modelBuilder.Entity("LearningManagementSystem.Models.ExaminationQuestion", b =>
+                {
+                    b.Property<int>("ExaminationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuestionExamId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ExaminationId", "QuestionExamId");
+
+                    b.HasIndex("QuestionExamId");
+
+                    b.ToTable("ExaminationQuestions");
+                });
+
             modelBuilder.Entity("LearningManagementSystem.Models.Favorite", b =>
                 {
                     b.Property<int>("Id")
@@ -398,6 +485,33 @@ namespace LearningManagementSystem.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Questions");
+                });
+
+            modelBuilder.Entity("LearningManagementSystem.Models.QuestionExam", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<string>("QuestionText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SubjectId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("QuestionExams");
                 });
 
             modelBuilder.Entity("LearningManagementSystem.Models.Subject", b =>
@@ -652,6 +766,17 @@ namespace LearningManagementSystem.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("LearningManagementSystem.Models.AnswerExam", b =>
+                {
+                    b.HasOne("LearningManagementSystem.Models.QuestionExam", "QuestionExam")
+                        .WithMany()
+                        .HasForeignKey("QuestionExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("QuestionExam");
+                });
+
             modelBuilder.Entity("LearningManagementSystem.Models.ApplicationUser", b =>
                 {
                     b.HasOne("LearningManagementSystem.Models.Department", "Department")
@@ -680,6 +805,36 @@ namespace LearningManagementSystem.Migrations
                     b.Navigation("Document");
 
                     b.Navigation("Lession");
+                });
+
+            modelBuilder.Entity("LearningManagementSystem.Models.Examination", b =>
+                {
+                    b.HasOne("LearningManagementSystem.Models.Subject", "Subject")
+                        .WithMany()
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Subject");
+                });
+
+            modelBuilder.Entity("LearningManagementSystem.Models.ExaminationQuestion", b =>
+                {
+                    b.HasOne("LearningManagementSystem.Models.Examination", "Examination")
+                        .WithMany()
+                        .HasForeignKey("ExaminationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LearningManagementSystem.Models.QuestionExam", "QuestionExam")
+                        .WithMany()
+                        .HasForeignKey("QuestionExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Examination");
+
+                    b.Navigation("QuestionExam");
                 });
 
             modelBuilder.Entity("LearningManagementSystem.Models.Favorite", b =>

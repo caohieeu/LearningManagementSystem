@@ -91,8 +91,9 @@ namespace LearningManagementSystem.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<int>(type: "int", nullable: false),
-                    Detail = table.Column<int>(type: "int", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Detail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsReaded = table.Column<bool>(type: "bit", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -300,7 +301,8 @@ namespace LearningManagementSystem.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    NotificationId = table.Column<int>(type: "int", nullable: false)
+                    NotificationId = table.Column<int>(type: "int", nullable: false),
+                    UserActive = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -315,6 +317,32 @@ namespace LearningManagementSystem.Migrations
                         name: "FK_UserNotifications_Notifications_NotificationId",
                         column: x => x.NotificationId,
                         principalTable: "Notifications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Examinations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FormExam = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Duration = table.Column<TimeSpan>(type: "time", nullable: false),
+                    SubjectId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IsApprove = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateBy = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Examinations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Examinations_Subjects_SubjectId",
+                        column: x => x.SubjectId,
+                        principalTable: "Subjects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -365,6 +393,27 @@ namespace LearningManagementSystem.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "QuestionExams",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ExaminationId = table.Column<int>(type: "int", nullable: false),
+                    QuestionText = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Order = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QuestionExams", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_QuestionExams_Examinations_ExaminationId",
+                        column: x => x.ExaminationId,
+                        principalTable: "Examinations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Lessions",
                 columns: table => new
                 {
@@ -389,6 +438,28 @@ namespace LearningManagementSystem.Migrations
                         name: "FK_Lessions_Titles_TitleId",
                         column: x => x.TitleId,
                         principalTable: "Titles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AnswerExams",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    QuestionExamId = table.Column<int>(type: "int", nullable: false),
+                    AnswerText = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsCorrect = table.Column<bool>(type: "bit", nullable: false),
+                    Order = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AnswerExams", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AnswerExams_QuestionExams_QuestionExamId",
+                        column: x => x.QuestionExamId,
+                        principalTable: "QuestionExams",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -478,6 +549,11 @@ namespace LearningManagementSystem.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AnswerExams_QuestionExamId",
+                table: "AnswerExams",
+                column: "QuestionExamId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Answers_QuestionId",
                 table: "Answers",
                 column: "QuestionId");
@@ -537,6 +613,11 @@ namespace LearningManagementSystem.Migrations
                 column: "LessionId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Examinations_SubjectId",
+                table: "Examinations",
+                column: "SubjectId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Favorites_UserId",
                 table: "Favorites",
                 column: "UserId");
@@ -550,6 +631,11 @@ namespace LearningManagementSystem.Migrations
                 name: "IX_Lessions_TitleId",
                 table: "Lessions",
                 column: "TitleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QuestionExams_ExaminationId",
+                table: "QuestionExams",
+                column: "ExaminationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Questions_LessionId",
@@ -590,6 +676,9 @@ namespace LearningManagementSystem.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AnswerExams");
+
+            migrationBuilder.DropTable(
                 name: "Answers");
 
             migrationBuilder.DropTable(
@@ -620,6 +709,9 @@ namespace LearningManagementSystem.Migrations
                 name: "UserSubjects");
 
             migrationBuilder.DropTable(
+                name: "QuestionExams");
+
+            migrationBuilder.DropTable(
                 name: "Questions");
 
             migrationBuilder.DropTable(
@@ -630,6 +722,9 @@ namespace LearningManagementSystem.Migrations
 
             migrationBuilder.DropTable(
                 name: "Notifications");
+
+            migrationBuilder.DropTable(
+                name: "Examinations");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
