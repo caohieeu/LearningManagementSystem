@@ -5,5 +5,6 @@
         PDF = 1,
         DOCX = 2,
         Video = 3,
+        XLS = 3,
     }
 }

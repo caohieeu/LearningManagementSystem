@@ -1,18 +1,17 @@
 ﻿using LearningManagementSystem.Utils;
 
-namespace LearningManagementSystem.Models
+namespace LearningManagementSystem.Dtos.Response
 {
-    public class QuestionExam
+    public class QuestionBankResponseDto
     {
         public int Id { get; set; }
         public string QuestionText { get; set; }
         public QEType Type { get; set; }
-        public string SubjectId { get; set; }
         public LevelType Level { get; set; }
-        public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
-        public string UpdatedBy { get; set; }
+        public string CreatedBy { get; set; }
         public DateTime LastUpdate { get; set; }
-        public int Order { get; set; }
+        public string UpdatedBy { get; set; }
+
     }
 }

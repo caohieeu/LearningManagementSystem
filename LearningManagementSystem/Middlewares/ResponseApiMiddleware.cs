@@ -71,7 +71,8 @@ public class ResponseMiddleware
                 response = new ResponseEntity()
                 {
                     code = 500,
-                    message = "Internal Server Error",
+                    //message = "Internal Server Error",
+                    message = ex.Message,
                 };
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 break;

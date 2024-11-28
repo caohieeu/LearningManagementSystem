@@ -25,6 +25,10 @@ namespace LearningManagementSystem.Mapper
             CreateMap<QuestionAxamRequestDto, QuestionExam>().ReverseMap();
             CreateMap<AnswerExamRequestDto, AnswerExam>().ReverseMap();
             CreateMap<ExaminationResponseDto, Examination>().ReverseMap();
+            CreateMap<AnswerExamResponseDto, AnswerExam>().ReverseMap();
+            CreateMap<QAExamResponseDto, QuestionExam>().ReverseMap();
+            CreateMap<ExQuestionBankRequestDto, Examination>().ReverseMap();
+            CreateMap<QuestionBankResponseDto, QuestionExam>().ReverseMap();
         }
     }
 }

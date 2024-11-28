@@ -2,7 +2,7 @@
 {
     public enum QEType
     {
-        TracNghiem,
-        TuLuan
+        TracNghiem = 1,
+        TuLuan = 2,
     }
 }

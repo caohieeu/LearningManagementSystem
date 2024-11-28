@@ -1,8 +1,8 @@
-﻿using LearningManagementSystem.Dtos.Request;
+﻿using LearningManagementSystem.Dtos;
+using LearningManagementSystem.Dtos.Request;
 using LearningManagementSystem.Services.IService;
 using LearningManagementSystem.Utils;
 using LearningManagementSystem.Utils.Pagination;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearningManagementSystem.Controllers
@@ -38,14 +38,75 @@ namespace LearningManagementSystem.Controllers
                 data = await _examinationService.AddExam(exam)
             });
         }
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteExam(int id)
+        [HttpPost("CreateFromQuestionBank")]
+        public async Task<IActionResult> CreateExamFromQuestionBank(ExQuestionBankRequestDto exam)
         {
             return Ok(new ResponseEntity
             {
                 code = ErrorCode.NoError.GetErrorInfo().code,
                 message = ErrorCode.NoError.GetErrorInfo().message,
-                data = await _examinationService.DeleteExam(id)
+                data = await _examinationService.AddFromQuestionBank(exam)
+            });
+        }
+        [HttpDelete("{ExamId}")]
+        public async Task<IActionResult> DeleteExam(int ExamId)
+        {
+            return Ok(new ResponseEntity
+            {
+                code = ErrorCode.NoError.GetErrorInfo().code,
+                message = ErrorCode.NoError.GetErrorInfo().message,
+                data = await _examinationService.DeleteExam(ExamId)
+            });
+        }
+        [HttpGet("GetQuestion/{ExamId}")]
+        public async Task<IActionResult> GetQuestionExamination(int ExamId)
+        {
+            return Ok(new ResponseEntity
+            {
+                code = ErrorCode.NoError.GetErrorInfo().code,
+                message = ErrorCode.NoError.GetErrorInfo().message,
+                data = await _examinationService.GetInformationExamination(ExamId)
+            });
+        }
+        [HttpGet("GetQuestionsByFilter")]
+        public async Task<IActionResult> GetQuestionsByFilter([FromQuery] FilterQExaminationDto filter, 
+            [FromQuery] PaginationParams paginationParams)
+        {
+            return Ok(new ResponseEntity
+            {
+                code = ErrorCode.NoError.GetErrorInfo().code,
+                message = ErrorCode.NoError.GetErrorInfo().message,
+                data = await _examinationService.GetQuestionByFilter(filter, paginationParams)
+            });
+        }
+        [HttpPost("AddQuestionBank")]
+        public async Task<IActionResult> AddQuestionBank(QuestionBankRequestDto questionAxamRequestDto)
+        {
+            return Ok(new ResponseEntity
+            {
+                code = ErrorCode.NoError.GetErrorInfo().code,
+                message = ErrorCode.NoError.GetErrorInfo().message,
+                data = await _examinationService.AddQuestionBank(questionAxamRequestDto)
+            });
+        }
+        [HttpPut("UpdateQuestionBank/{QuestionId}")]
+        public async Task<IActionResult> UpdateQuestionBank(QuestionBankRequestDto questionAxamRequestDto, int QuestionId)
+        {
+            return Ok(new ResponseEntity
+            {
+                code = ErrorCode.NoError.GetErrorInfo().code,
+                message = ErrorCode.NoError.GetErrorInfo().message,
+                data = await _examinationService.UpdateQuestionBank(questionAxamRequestDto, QuestionId)
+            });
+        }
+        [HttpDelete("DeleteQuestionBank")]
+        public async Task<IActionResult> DeleteQuestionBank(int QuestionId)
+        {
+            return Ok(new ResponseEntity
+            {
+                code = ErrorCode.NoError.GetErrorInfo().code,
+                message = ErrorCode.NoError.GetErrorInfo().message,
+                data = await _examinationService.DeleteQuestionBank(QuestionId)
             });
         }
     }
