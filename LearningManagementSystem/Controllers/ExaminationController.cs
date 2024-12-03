@@ -3,6 +3,7 @@ using LearningManagementSystem.Dtos.Request;
 using LearningManagementSystem.Services.IService;
 using LearningManagementSystem.Utils;
 using LearningManagementSystem.Utils.Pagination;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearningManagementSystem.Controllers
@@ -28,6 +29,16 @@ namespace LearningManagementSystem.Controllers
                 SubjectId, ExamName)
             });
         }
+        [HttpGet("{ExamId}")]
+        public async Task<IActionResult> GetExamDetail(int ExamId)
+        {
+            return Ok(new ResponseEntity
+            {
+                code = ErrorCode.NoError.GetErrorInfo().code,
+                message = ErrorCode.NoError.GetErrorInfo().message,
+                data = await _examinationService.GetDetailExamination(ExamId)
+            });
+        }
         [HttpPost]
         public async Task<IActionResult> AddAxam(ExaminationRequestDto exam)
         {
@@ -36,6 +47,30 @@ namespace LearningManagementSystem.Controllers
                 code = ErrorCode.NoError.GetErrorInfo().code,
                 message = ErrorCode.NoError.GetErrorInfo().message,
                 data = await _examinationService.AddExam(exam)
+            });
+        }
+
+        [Authorize(Roles = Roles.LeaderShip)]
+        [HttpPut("Approve/{ExamId}")]
+        public async Task<IActionResult> ApproveExamination(int ExamId)
+        {
+            return Ok(new ResponseEntity
+            {
+                code = ErrorCode.NoError.GetErrorInfo().code,
+                message = ErrorCode.NoError.GetErrorInfo().message,
+                data = await _examinationService.ApproveExamination(ExamId)
+            });
+        }
+
+        [Authorize(Roles = Roles.LeaderShip)]
+        [HttpPut("CancelApprove/{ExamId}")]
+        public async Task<IActionResult> CancelApproveExamination(int ExamId)
+        {
+            return Ok(new ResponseEntity
+            {
+                code = ErrorCode.NoError.GetErrorInfo().code,
+                message = ErrorCode.NoError.GetErrorInfo().message,
+                data = await _examinationService.CancelApproveExamination(ExamId)
             });
         }
         [HttpPost("CreateFromQuestionBank")]

@@ -29,6 +29,8 @@ namespace LearningManagementSystem.DAL
         public DbSet<QuestionExam> QuestionExams { get; set; }
         public DbSet<AnswerExam> AnswerExams { get; set; }
         public DbSet<ExaminationQuestion> ExaminationQuestions { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
 
@@ -45,6 +47,9 @@ namespace LearningManagementSystem.DAL
 
             builder.Entity<ExaminationQuestion>()
                .HasKey(dl => new { dl.ExaminationId, dl.QuestionExamId });
+
+            builder.Entity<RolePermission>()
+               .HasKey(rp => new { rp.RoleId, rp.PermissionId });
 
             builder.Entity<ApplicationUser>()
                 .HasOne(u => u.Department)

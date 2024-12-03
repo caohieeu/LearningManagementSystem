@@ -16,7 +16,7 @@ namespace LearningManagementSystem.Controllers
         {
             _subjectService = subjectService;
         }
-        [HttpGet("")]
+        [HttpGet]
         public async Task<ResponseEntity> GetAll()
         {
             return new ResponseEntity
@@ -26,7 +26,17 @@ namespace LearningManagementSystem.Controllers
                 data = await _subjectService.GetAllSubject()
             };
         }
-        [HttpPost("")]
+        [HttpGet("GetSubjects")]
+        public async Task<ResponseEntity> GetSubjects()
+        {
+            return new ResponseEntity
+            {
+                code = ErrorCode.NoError.GetErrorInfo().code,
+                message = ErrorCode.NoError.GetErrorInfo().message,
+                data = await _subjectService.GetSubjectsByUser()
+            };
+        }
+        [HttpPost]
         public async Task<IActionResult> AddSubject([FromBody] SubjectRequestDto subject)
         {
             if(await _subjectService.AddSubject(subject))
@@ -43,7 +53,7 @@ namespace LearningManagementSystem.Controllers
                 message = ErrorCode.Error.GetErrorInfo().message,
             });
         }
-        [HttpPut("")]
+        [HttpPut]
         public async Task<ResponseEntity> UpdateSubject([FromBody] SubjectRequestDto subject)
         {
             return new ResponseEntity

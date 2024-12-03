@@ -11,5 +11,6 @@ namespace LearningManagementSystem.Services.IService
         Task<bool> AddSubject(SubjectRequestDto subjectDto);
         Task<bool> UpdateSubject(Subject subject);
         Task<bool> DeleteSubject(Subject subject);
+        Task<List<Subject>> GetSubjectsByUser();
     }
 }

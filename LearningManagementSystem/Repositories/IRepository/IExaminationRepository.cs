@@ -18,5 +18,8 @@ namespace LearningManagementSystem.Repositories.IRepository
         Task<bool> AddQuestionBank(QuestionBankRequestDto questionAxamRequestDto);
         Task<bool> DeleteQuestionBank(int questionId);
         Task<bool> UpdateQuestionBank(QuestionBankRequestDto questionAxamRequestDto, int questionId);
+        Task<bool> ApproveExamination(int examId);
+        Task<bool> CancelApproveExamination(int examId);
+        Task<Examination> GetDetailExamination(int examId);
     }
 }

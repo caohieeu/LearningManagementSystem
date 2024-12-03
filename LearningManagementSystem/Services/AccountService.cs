@@ -66,7 +66,6 @@ namespace LearningManagementSystem.Services
             IntrospectResponseDto response = new IntrospectResponseDto
             {
                 Valid = false,
-                User = null
             };
 
             if (tokenInfo == null || !tokenInfo.TryGetValue("exp", out expiredDate))
@@ -74,9 +73,9 @@ namespace LearningManagementSystem.Services
                 return response;
             }
 
-            DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(expiredDate));
+            DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expiredDate));
             DateTime dateTime = dateTimeOffset.UtcDateTime;
-            if (dateTime < DateTime.UtcNow)
+            if (dateTime > DateTime.UtcNow)
             {
                 response.Valid = true;
 

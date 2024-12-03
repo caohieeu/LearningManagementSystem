@@ -1,3 +1,4 @@
+using LearningManagementSystem.Authorization;
 using LearningManagementSystem.DAL;
 using LearningManagementSystem.Mapper;
 using LearningManagementSystem.Models;
@@ -6,6 +7,7 @@ using LearningManagementSystem.Repositories.IRepository;
 using LearningManagementSystem.Services;
 using LearningManagementSystem.Services.IService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -85,10 +87,27 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero,
         ValidAudience = builder.Configuration["JWT:ValidAudience"],
         ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AppSettings:SecretKey"]))
     };
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ViewUserPermission", policy =>
+    {
+        policy.Requirements.Add(new PermissionRequirement("ViewUser"));
+    });
+    options.AddPolicy("EditUserPermission", policy =>
+    {
+        policy.Requirements.Add(new PermissionRequirement("EditUser"));
+    });
+    options.AddPolicy("ViewAuthorizationPermission", policy =>
+    {
+        policy.Requirements.Add(new PermissionRequirement("ViewAuthorization"));
+    });
 });
 
 //Services
@@ -101,6 +120,7 @@ builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<IExaminationRepository, ExaminationRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
@@ -113,9 +133,12 @@ builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IExaminationService, ExaminationService>();
 builder.Services.AddScoped<IExcelExportService, ExcelExportService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserContext, UserContext>();
+builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>();
 
 var app = builder.Build();
 

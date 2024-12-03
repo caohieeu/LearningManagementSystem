@@ -15,17 +15,19 @@ namespace LearningManagementSystem.Services
         private readonly LMSContext _context;
         private readonly IMapper _mapper;
         private readonly IDocumentService _documentService;
+        private readonly IUserContext _userContext;
         public SubjectService(
             ISubjectRepository subjectRepository,
             LMSContext context,
             IMapper mapper,
-            IDocumentService documentService)
+            IDocumentService documentService,
+            IUserContext userContext)
         {
             _subjectRepository = subjectRepository;
             _context = context;
             _mapper = mapper;
             _documentService = documentService;
-        }
+            _userContext = userContext;        }
         public async Task<string> GenerateNewId()
         {
             var entity = await _context.Subjects
@@ -85,6 +87,20 @@ namespace LearningManagementSystem.Services
         public async Task<Subject> GetSubject(string id)
         {
             return await _subjectRepository.GetSubjectById(id);
+        }
+
+        public async Task<List<Subject>> GetSubjectsByUser()
+        {
+            var userId = await _userContext.GetId();
+
+            var subjects = await _context.UserSubjects
+                .Where(s => s.UserId == userId)
+                .Select(s => s.SubjectId)
+                .ToListAsync();
+
+            return await _context.Subjects
+               .Where(s => subjects.Any(p => p == s.Id))
+               .ToListAsync();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using LearningManagementSystem.Dtos.Response;
 using LearningManagementSystem.Exceptions;
 using LearningManagementSystem.Services.IService;
+using System.Security.Authentication;
 
 namespace LearningManagementSystem.DAL
 {
@@ -25,10 +26,15 @@ namespace LearningManagementSystem.DAL
 
             if(token == null)
             {
-                throw new AuthorizationException("Token không không hợp lệ");
+                throw new AuthorizationException("Người dùng chưa được xác thực");
             }
 
             var currentUser = await _accountService.GetInfoUser(token);
+
+            if(currentUser == null)
+            {
+                throw new AuthorizationException("Người dùng chưa được xác thực");
+            }
 
             return currentUser.User;
         }
@@ -41,11 +47,19 @@ namespace LearningManagementSystem.DAL
         }
         public async Task<IntrospectResponseDto> GetCurrentInforUser()
         {
+            var user = await GetCurrentUserInfo();
+
             IntrospectResponseDto response = new IntrospectResponseDto
             {
-                Valid = true,
-                User = await GetCurrentUserInfo()
+                Valid = false,
             };
+
+            if (user == null)
+            {
+                throw new AuthorizationException("Người dùng chưa được xác thực");
+            }
+
+            response.User = user;
 
             return response;
         }

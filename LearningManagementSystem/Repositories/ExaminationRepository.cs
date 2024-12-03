@@ -11,6 +11,7 @@ using LearningManagementSystem.Utils;
 using LearningManagementSystem.Utils.Pagination;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Engineering;
+using System.Runtime.CompilerServices;
 
 namespace LearningManagementSystem.Repositories
 {
@@ -420,6 +421,68 @@ namespace LearningManagementSystem.Repositories
             {
                 return false;
             }
+        }
+
+        public async Task<bool> ApproveExamination(int examId)
+        {
+            var exam = await GetById(examId);
+
+            if(exam == null)
+            {
+                throw new NotFoundException("Không tìm thấy đề thi");
+            }
+
+            exam.Status = ApproveStatus.Accept;
+            exam.IsApprove = true;
+
+            try
+            {
+                _context.Examinations.Update(exam);
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch
+            {
+               return false;
+            }
+        }
+
+        public async Task<bool> CancelApproveExamination(int examId)
+        {
+            var exam = await GetById(examId);
+
+            if (exam == null)
+            {
+                throw new NotFoundException("Không tìm thấy đề thi");
+            }
+
+            exam.Status = ApproveStatus.Cancel;
+            exam.IsApprove = true;
+
+            try
+            {
+                _context.Examinations.Update(exam);
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<Examination> GetDetailExamination(int examId)
+        {
+            var exam = await GetById(examId);
+
+            if (exam == null)
+            {
+                throw new NotFoundException("Không tìm thấy đề thi");
+            }
+
+            return exam;
         }
     }
 }

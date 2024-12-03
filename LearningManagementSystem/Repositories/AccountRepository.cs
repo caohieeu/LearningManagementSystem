@@ -2,6 +2,7 @@
 using LearningManagementSystem.DAL;
 using LearningManagementSystem.Dtos;
 using LearningManagementSystem.Dtos.Response;
+using LearningManagementSystem.Exceptions;
 using LearningManagementSystem.Models;
 using LearningManagementSystem.Repositories.IRepository;
 using LearningManagementSystem.Utils;
@@ -118,7 +119,7 @@ namespace LearningManagementSystem.Repositories
         {
             var user = new ApplicationUser
             {
-                Id = model.Id,
+                Id = Guid.NewGuid().ToString(),
                 UserName = model.UserName,
                 Email = model.Email,
                 FullName = model.FullName,
@@ -130,14 +131,16 @@ namespace LearningManagementSystem.Repositories
 
             var result = await _userManager.CreateAsync(user, model.Password);
 
-            if(result.Succeeded)
+            if (result.Succeeded)
             {
-                if(!await _roleManager.RoleExistsAsync(Utils.Roles.Teacher))
+                if (!string.IsNullOrEmpty(model.Role))
                 {
-                    await _roleManager.CreateAsync(new IdentityRole(Utils.Roles.Teacher));
+                    if (!await _roleManager.RoleExistsAsync(model.Role))
+                    {
+                        throw new NotFoundException($"Không tồn tại vai trò ${model.Role}");
+                    }
+                    await _userManager.AddToRoleAsync(user, model.Role);
                 }
-
-                await _userManager.AddToRoleAsync(user, Utils.Roles.Teacher);
             }
 
             return result;

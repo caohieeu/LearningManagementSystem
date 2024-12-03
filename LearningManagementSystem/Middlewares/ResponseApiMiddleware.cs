@@ -57,15 +57,39 @@ public class ResponseMiddleware
                     code = ErrorCode.Unauthorized.GetErrorInfo().code,
                     message = ex.Message,
                 };
-                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 break;
             case ArgumentNullException _:
                 response = new ResponseEntity()
                 {
-                    code = 404,
+                    code = 400,
                     message = ex.Message,
                 };
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                break;
+            case LearningManagementSystem.Exceptions.ArgumentException _:
+                response = new ResponseEntity()
+                {
+                    code = 400,
+                    message = ex.Message,
+                };
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                break;
+            case AlreadyExistException _:
+                response = new ResponseEntity()
+                {
+                    code = 422,
+                    message = ex.Message,
+                };
+                context.Response.StatusCode = 422;
+                break;
+            case AuthenticationExceptionSub _:
+                response = new ResponseEntity()
+                {
+                    code = 401,
+                    message = ex.Message,
+                };
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 break;
             default:
                 response = new ResponseEntity()

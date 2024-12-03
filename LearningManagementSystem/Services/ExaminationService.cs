@@ -105,5 +105,24 @@ namespace LearningManagementSystem.Services
         {
             return _examinationRepository.UpdateQuestionBank(questionAxamRequestDto, questionId);
         }
+
+        public Task<bool> ApproveExamination(int examId)
+        {
+            return _examinationRepository.ApproveExamination(examId);
+        }
+
+        public Task<bool> CancelApproveExamination(int examId)
+        {
+            return _examinationRepository.CancelApproveExamination(examId);
+        }
+
+        public async Task<ExaminationResponseDto> GetDetailExamination(int examId)
+        {
+            var examination = await _examinationRepository.GetDetailExamination(examId);
+
+            var examinationMapper = _mapper.Map<ExaminationResponseDto>(examination);
+
+            return examinationMapper;
+        }
     }
 }
