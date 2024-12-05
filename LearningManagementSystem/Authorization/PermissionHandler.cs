@@ -21,6 +21,11 @@ namespace LearningManagementSystem.Authorization
                 context.Fail();
                 return;
             }
+            
+            var roleUser = (from ur in _context.UserRoles
+                            join r in _context.Roles on ur.RoleId equals r.Id
+                            where ur.UserId == userId
+                            select r.Name).FirstOrDefault();
 
             var userPermission = await (from ur in _context.UserRoles
                                         join rp in _context.RolePermissions on ur.RoleId equals rp.RoleId
@@ -28,7 +33,8 @@ namespace LearningManagementSystem.Authorization
                                         where ur.UserId == userId
                                         select p.Name).ToListAsync();
 
-            if(userPermission.Contains(requirement.PermissionName))
+            if(userPermission.Contains(requirement.PermissionName) ||
+                roleUser == Utils.Roles.LeaderShip)
             {
                 context.Succeed(requirement);
             }

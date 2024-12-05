@@ -18,6 +18,7 @@ namespace LearningManagementSystem.Controllers
             _examinationService = examinationService;
         }
         [HttpGet]
+        [Authorize(Policy = "ViewExaminationPermission")]
         public async Task<IActionResult> GetExam([FromQuery] PaginationParams pagination, 
             string? DepartmentId, string? SubjectId, string? ExamName)
         {
@@ -40,6 +41,7 @@ namespace LearningManagementSystem.Controllers
             });
         }
         [HttpPost]
+        [Authorize(Policy = "AddExaminationPermission")]
         public async Task<IActionResult> AddAxam(ExaminationRequestDto exam)
         {
             return Ok(new ResponseEntity
@@ -84,6 +86,7 @@ namespace LearningManagementSystem.Controllers
             });
         }
         [HttpDelete("{ExamId}")]
+        [Authorize(Policy = "DeleteExaminationPermission")]
         public async Task<IActionResult> DeleteExam(int ExamId)
         {
             return Ok(new ResponseEntity

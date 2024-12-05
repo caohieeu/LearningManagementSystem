@@ -94,21 +94,41 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization(options =>
+var policies = new Dictionary<string, string>
 {
-    options.AddPolicy("ViewUserPermission", policy =>
+    { "ViewUserPermission", "ViewUser" },
+    { "EditUserPermission", "EditUser" },
+    { "ViewAuthorizationPermission", "ViewAuthorization" },
+    { "AddAuthorizationPermission", "AddAuthorization" },
+    { "EditAuthorizationPermission", "EditAuthorization" },
+    { "ViewSubjectPermission", "ViewSubject" },
+    { "EditSubjectPermission", "EditSubject" },
+    { "ViewExaminationPermission", "ViewExamination" },
+    { "AddExaminationPermission", "AddExamination" },
+    { "EditExaminationPermission", "EditExamination" },
+    { "DeleteExaminationPermission", "DeleteExamination" },
+    { "DownloadExaminationPermission", "DownloadExamination" },
+    { "ApproveExaminationPermission", "ApproveExamination" },
+    { "DeleteFilePermission", "DeleteFile" },
+    { "DownloadFilePermission", "DownloadFile" },
+    { "AddLessionAndResourcePermission", "AddLessionAndResource" },
+    { "ViewLessionAndResourcePermission", "ViewLessionAndResource" },
+    { "EditLessionAndResourcePermission", "EditLessionAndResource" },
+    { "DeleteLessionAndResourcePermission", "DeleteLessionAndResource" },
+    { "AddSubjectLessionAndResourcePermission", "AddSubjectLessionAndResource" },
+    { "DownloadLessionAndResourcePermission", "DownloadLessionAndResource" },
+};
+
+foreach (var policy in policies)
+{
+    builder.Services.AddAuthorization(options =>
     {
-        policy.Requirements.Add(new PermissionRequirement("ViewUser"));
+        options.AddPolicy(policy.Key, policyOptions =>
+        {
+            policyOptions.Requirements.Add(new PermissionRequirement(policy.Value));
+        });
     });
-    options.AddPolicy("EditUserPermission", policy =>
-    {
-        policy.Requirements.Add(new PermissionRequirement("EditUser"));
-    });
-    options.AddPolicy("ViewAuthorizationPermission", policy =>
-    {
-        policy.Requirements.Add(new PermissionRequirement("ViewAuthorization"));
-    });
-});
+}
 
 //Services
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();

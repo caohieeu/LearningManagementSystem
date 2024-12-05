@@ -1,10 +1,8 @@
 ﻿using LearningManagementSystem.Dtos;
-using LearningManagementSystem.Services;
 using LearningManagementSystem.Services.IService;
 using LearningManagementSystem.Utils;
 using LearningManagementSystem.Utils.Pagination;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearningManagementSystem.Controllers
@@ -29,8 +27,8 @@ namespace LearningManagementSystem.Controllers
                 data = await _userService.GetAllUser()
             });
         }
-        [HttpGet("GetUsers")]
         [Authorize(Policy = "ViewUserPermission")]
+        [HttpGet("GetUsers")]
         public async Task<IActionResult> GetUsers([FromQuery] FilterUserDto filter,
             [FromQuery] PaginationParams paginationParams)
         {
@@ -51,8 +49,8 @@ namespace LearningManagementSystem.Controllers
                 data = await _userService.AddUser(user)
             });
         }
-        [HttpDelete]
         [Authorize(Policy = "EditUserPermission")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteUser(string userId)
         {
             return Ok(new ResponseEntity

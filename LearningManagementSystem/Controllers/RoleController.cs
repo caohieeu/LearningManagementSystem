@@ -67,6 +67,7 @@ namespace LearningManagementSystem.Controllers
                 data = await _roleService.GetPermissionOfRole(roleName)
             });
         }
+        [Authorize(Policy = "EditAuthorizationPermission")]
         [HttpDelete("RemovePermissionToRole")]
         public async Task<IActionResult> RemovePermissionToRole(string? roleName, int permissionId)
         {
@@ -77,6 +78,7 @@ namespace LearningManagementSystem.Controllers
                 data = await _roleService.RemovePermissionToRole(roleName, permissionId)
             });
         }
+        [Authorize(Policy = "AddAuthorizationPermission")]
         [HttpPost("AssignRoleToUser")]
         public async Task<IActionResult> AssignRoleToUser(string? roleName, string? email)
         {
@@ -95,6 +97,7 @@ namespace LearningManagementSystem.Controllers
                 data = await _roleService.AssignRoleToUser(roleName, email)
             });
         }
+        [Authorize(Policy = "EditAuthorizationPermission")]
         [HttpDelete("RemoveRoleToUser")]
         public async Task<IActionResult> RemoveRoleToUser(string? roleName, string? email)
         {

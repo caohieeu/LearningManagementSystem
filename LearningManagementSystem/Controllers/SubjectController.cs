@@ -2,6 +2,7 @@
 using LearningManagementSystem.Models;
 using LearningManagementSystem.Services.IService;
 using LearningManagementSystem.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +17,7 @@ namespace LearningManagementSystem.Controllers
         {
             _subjectService = subjectService;
         }
+        [Authorize(Policy = "ViewSubjectPermission")]
         [HttpGet]
         public async Task<ResponseEntity> GetAll()
         {
@@ -26,6 +28,7 @@ namespace LearningManagementSystem.Controllers
                 data = await _subjectService.GetAllSubject()
             };
         }
+        [Authorize(Policy = "ViewSubjectPermission")]
         [HttpGet("GetSubjects")]
         public async Task<ResponseEntity> GetSubjects()
         {
@@ -36,6 +39,7 @@ namespace LearningManagementSystem.Controllers
                 data = await _subjectService.GetSubjectsByUser()
             };
         }
+        [Authorize(Roles = Utils.Roles.LeaderShip)]
         [HttpPost]
         public async Task<IActionResult> AddSubject([FromBody] SubjectRequestDto subject)
         {
@@ -53,6 +57,7 @@ namespace LearningManagementSystem.Controllers
                 message = ErrorCode.Error.GetErrorInfo().message,
             });
         }
+        [Authorize(Policy = "EditSubjectPermission")]
         [HttpPut]
         public async Task<ResponseEntity> UpdateSubject([FromBody] SubjectRequestDto subject)
         {
