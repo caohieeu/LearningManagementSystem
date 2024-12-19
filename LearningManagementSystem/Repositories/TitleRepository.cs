@@ -46,12 +46,12 @@ namespace LearningManagementSystem.Repositories
             }
         }
 
-        public Task<List<Title>> GetBySubject(string id)
+        public Task<List<Title>> GetBySubject(string subjectId)
         {
             try
             {
                 return _context.Titles
-                .Where(x => x.SubjectId == id)
+                .Where(x => x.SubjectId == subjectId)
                 .ToListAsync();
             }
             catch

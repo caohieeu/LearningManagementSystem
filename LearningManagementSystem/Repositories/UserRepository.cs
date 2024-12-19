@@ -88,6 +88,13 @@ namespace LearningManagementSystem.Repositories
             return true;
         }
 
+        public async Task<ApplicationUser> GetUserById(string userId)
+        {
+            return await _context.Users
+                .Where(u => u.Id == userId)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<PagedResult<ApplicationUser>> GetUsers(FilterUserDto filter, PaginationParams paginationParams)
         {
             List<ApplicationUser> questions = new List<ApplicationUser>();

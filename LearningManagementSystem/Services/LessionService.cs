@@ -85,7 +85,10 @@ namespace LearningManagementSystem.Services
         {
             return await _lessionRepository.GetByTitleAndClass(titleId, classId);
         }
-
+        public async Task<LessionResponseDto> GetLessionsByTitleAndClass(int titleId, string classId)
+        {
+            return await _lessionRepository.GetLessionsByTitleAndClass(titleId, classId);
+        }
         public async Task<List<LessionDto>> GetAllLession()
         {
             var listLession = await _lessionRepository.GetAll();

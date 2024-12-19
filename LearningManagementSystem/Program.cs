@@ -9,6 +9,7 @@ using LearningManagementSystem.Services.IService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -64,13 +65,46 @@ builder.Services.AddControllers()
 //Connection DB
 builder.Services.AddDbContext<LMSContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration["ConnectionStrings:DBConnection"]);
+    options.UseSqlServer(builder.Configuration["ConnectionStrings:DBConnection"], opt =>
+    {
+        opt.CommandTimeout(600);
+    });
 });
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<LMSContext>().AddDefaultTokenProviders();
+
+//builder.Services.AddControllers()
+// .ConfigureApiBehaviorOptions(o =>
+// {
+//     o.InvalidModelStateResponseFactory = context =>
+//     {
+//         var problemsDetailsFactory = context.HttpContext.RequestServices
+//             .GetRequiredService<ProblemDetailsFactory>();
+//         var problemDetails = problemsDetailsFactory.CreateValidationProblemDetails(
+//             context.HttpContext,
+//             context.ModelState);
+//         problemDetails.Detail = "Custom Details";
+//         problemDetails.Instance = context.HttpContext.Request.Path;
+//         problemDetails.Type = "https://tools.etf............";
+//         problemDetails.Status = StatusCodes.Status400BadRequest;
+//         problemDetails.Title = "One or more errors on input occured";
+//         return IActionResult<ResponseEntity>() {
+//             new ResponseEntity()
+//             {
+//                 code = 400,
+//                 message = "Lsdasdasd"
+//             };
+//         }
+//     };
+// });
+
+builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
+{
+    opt.TokenLifespan = TimeSpan.FromMinutes(3);
+});
 
 builder.Services.AddAuthentication(options =>
 {
@@ -159,6 +193,12 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserContext, UserContext>();
 builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>();
+
+//send mail
+builder.Services.AddOptions();
+var mailSetting = builder.Configuration.GetSection("MailSettings");
+builder.Services.Configure<MailSettings>(mailSetting);
+builder.Services.AddScoped<IEmailSender, SendMailService>();
 
 var app = builder.Build();
 

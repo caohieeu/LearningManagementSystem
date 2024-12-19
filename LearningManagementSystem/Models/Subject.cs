@@ -20,5 +20,8 @@ namespace LearningManagementSystem.Models
         public AcademicYear AcademicYear { get; set; } = null!;
         public string DepartmentId { get; set; }
         public Department Department { get; set; }
+        public string UserId { get; set; }
+        [ForeignKey(nameof(UserId))]
+        public ApplicationUser User { get; set; }
     }
 }

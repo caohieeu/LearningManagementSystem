@@ -35,10 +35,16 @@ namespace LearningManagementSystem.Repositories
                     FileData = x.Document.FileData,
                     FileType = x.Document.FileType,
                     Type = x.Document.Type,
+                    IsAprroved = x.Document.IsAprroved,
                 })
                 .ToList();
 
             return lession;
+        }
+
+        public Task<LessionResponseDto> GetLessionsByTitleAndClass(int titleId, string classId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

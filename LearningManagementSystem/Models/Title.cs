@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LearningManagementSystem.Models
@@ -10,7 +11,8 @@ namespace LearningManagementSystem.Models
         public string Name { get; set; }
         public bool Status { get; set; }
         public string SubjectId { get; set; }
-        [ForeignKey("SubjectId")]
+        [ForeignKey(nameof(SubjectId))]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Subject Subject { get; set; }
     }
 }

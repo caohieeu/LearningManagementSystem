@@ -16,18 +16,14 @@ namespace LearningManagementSystem.Controllers
         {
             _titleService = titleService;
         }
-        [HttpGet("GetBySubject/{id}")]
-        public async Task<IActionResult> GetTitleBySubject([FromRoute] string id)
+        [HttpGet("GetBySubject/{subjectId}")]
+        public async Task<IActionResult> GetTitleBySubject([FromRoute] string subjectId)
         {
-            if(string.IsNullOrEmpty(id))
-            {
-                return BadRequest("Invalid Data");
-            }
             return Ok(new ResponseEntity
             {
                 code = ErrorCode.NoError.GetErrorInfo().code,
                 message = ErrorCode.NoError.GetErrorInfo().message,
-                data = await _titleService.GetBySubject(id)
+                data = await _titleService.GetBySubject(subjectId)
             });
         }
         [HttpPost("")]

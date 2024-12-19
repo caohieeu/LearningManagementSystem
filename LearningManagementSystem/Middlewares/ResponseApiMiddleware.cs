@@ -91,6 +91,14 @@ public class ResponseMiddleware
                 };
                 context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 break;
+            case ValidateException _:
+                response = new ResponseEntity()
+                {
+                    code = (int)HttpStatusCode.BadRequest,
+                    message = ex.Message,
+                };
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                break;
             default:
                 response = new ResponseEntity()
                 {

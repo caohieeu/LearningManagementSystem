@@ -1,4 +1,5 @@
-﻿using LearningManagementSystem.Dtos.Request;
+﻿using LearningManagementSystem.Dtos;
+using LearningManagementSystem.Dtos.Request;
 using LearningManagementSystem.Models;
 using LearningManagementSystem.Services.IService;
 using LearningManagementSystem.Utils;
@@ -14,7 +15,7 @@ namespace LearningManagementSystem.Controllers
     {
         private readonly ISubjectService _subjectService;
         public SubjectController(ISubjectService subjectService)
-        {
+        {  
             _subjectService = subjectService;
         }
         [Authorize(Policy = "ViewSubjectPermission")]
@@ -29,8 +30,19 @@ namespace LearningManagementSystem.Controllers
             };
         }
         [Authorize(Policy = "ViewSubjectPermission")]
-        [HttpGet("GetSubjects")]
-        public async Task<ResponseEntity> GetSubjects()
+        [HttpGet("GetDetail")]
+        public async Task<ResponseEntity> GetSubjectDetail(string subjectId, string classId)
+        {
+            return new ResponseEntity
+            {
+                code = ErrorCode.NoError.GetErrorInfo().code,
+                message = ErrorCode.NoError.GetErrorInfo().message,
+                data = await _subjectService.GetSubjectDetail(subjectId, classId)
+            };
+        }
+        [Authorize(Policy = "ViewSubjectPermission")]
+        [HttpGet("GetSubjectsByUser")]
+        public async Task<ResponseEntity> GetSubjectsByUser()
         {
             return new ResponseEntity
             {
@@ -39,7 +51,7 @@ namespace LearningManagementSystem.Controllers
                 data = await _subjectService.GetSubjectsByUser()
             };
         }
-        [Authorize(Roles = Utils.Roles.LeaderShip)]
+        [Authorize(Roles = Utils.Roles.LeaderShip + ", " + Utils.Roles.Teacher)]
         [HttpPost]
         public async Task<IActionResult> AddSubject([FromBody] SubjectRequestDto subject)
         {
@@ -58,14 +70,25 @@ namespace LearningManagementSystem.Controllers
             });
         }
         [Authorize(Policy = "EditSubjectPermission")]
-        [HttpPut]
-        public async Task<ResponseEntity> UpdateSubject([FromBody] SubjectRequestDto subject)
+        [HttpPut("{subjectId}")]
+        public async Task<ResponseEntity> UpdateSubject([FromBody] SubjectRequestDto subject, string subjectId)
         {
             return new ResponseEntity
             {
                 code = ErrorCode.NoError.GetErrorInfo().code,
                 message = ErrorCode.NoError.GetErrorInfo().message,
-                data = await _subjectService.AddSubject(subject)
+                data = await _subjectService.UpdateSubject(subject, subjectId)
+            };
+        }
+        [Authorize(Roles = Utils.Roles.LeaderShip + ", " + Utils.Roles.Teacher)]
+        [HttpPost("AssignSubject")]
+        public async Task<ResponseEntity> AssignSubject([FromBody] AssignSubjectDto subject)
+        {
+            return new ResponseEntity
+            {
+                code = ErrorCode.NoError.GetErrorInfo().code,
+                message = ErrorCode.NoError.GetErrorInfo().message,
+                data = await _subjectService.AssignSubjectToStudent(subject)
             };
         }
     }

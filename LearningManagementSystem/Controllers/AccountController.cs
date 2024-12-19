@@ -5,6 +5,7 @@ using LearningManagementSystem.Services.IService;
 using LearningManagementSystem.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace LearningManagementSystem.Controllers
 {
@@ -20,9 +21,9 @@ namespace LearningManagementSystem.Controllers
             _userContext = userContext;
         }
         [HttpPost("SignUp")]
-        public Task<IdentityResult> SignUpAsync([FromBody] SignUpDto signUpDto)
+        public Task<IdentityResult> SignUpAsync([FromForm] SignUpDto signUpDto, IFormFile? avatar)
         {
-            return _accountService.SignUpAsync(signUpDto);
+            return _accountService.SignUpAsync(signUpDto, avatar);
         }
         [HttpPost("SignIn")]
         public async Task<IActionResult> SignInAsync([FromBody] SignInDto signInDto)
@@ -44,14 +45,48 @@ namespace LearningManagementSystem.Controllers
                 data = response
             });
         }
-        [HttpGet("GetAll")]
-        public async Task<ResponseEntity> GetAll()
+        [HttpPost("Auth/ForgotPassword")]
+        public async Task<IActionResult> SendMailForgotPassword(ForgotPasswordDto forgotPasswordDto)
+        {
+            var response = await _accountService.SendMailForgotPassword(forgotPasswordDto);
+            if(response)
+            {
+                return Ok("Gửi mail thành công, vui lòng kiểm tra email của bạn");
+            }
+            else
+            {
+                return BadRequest("Lỗi xảy ra, vui lòng thử lại sau");
+            }
+        }
+        [HttpPost("Auth/ConfirmChangePassword")]
+        public async Task<IActionResult> ConfirmChangePassword(ConfirmPasswordDto confirmPasswordDto)
+        {
+            var response = await _accountService.ConfirmChangePassword(confirmPasswordDto);
+            if (response)
+            {
+                return Ok(new ResponseEntity
+                {
+                    code = 200,
+                    message = "Đổi mật khẩu thành công",
+                });
+            }
+            else
+            {
+                return BadRequest(new ResponseEntity
+                {
+                    code = (int)HttpStatusCode.BadRequest,
+                    message = "Có lỗi xảy ra vui lòng thử lại sau",
+                });
+            }
+        }
+        [HttpPut]
+        public async Task<ResponseEntity> UpdateAccount()
         {
             return new ResponseEntity()
             {
                 code = ErrorCode.NoError.GetErrorInfo().code,
                 message = ErrorCode.NoError.GetErrorInfo().message,
-                data = await _accountService.GetAllUser()
+                //data = await _accountService.UpdateAccount()
             };
         }
         [HttpGet("GetInfo")]

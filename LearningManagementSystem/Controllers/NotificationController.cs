@@ -25,6 +25,16 @@ namespace LearningManagementSystem.Controllers
                 data = await _notificationService.GetPagedNotificationAsync(pagination, isRead)
             });
         }
+        [HttpGet("GetBySubject")]
+        public async Task<IActionResult> GetNotificationBySubject([FromQuery] PaginationParams pagination, [FromQuery] string subjectId)
+        {
+            return Ok(new ResponseEntity
+            {
+                code = 200,
+                message = "Thực hiện thành công",
+                data = await _notificationService.GetPagedNotificationBySubjectAsync(pagination, subjectId)
+            });
+        }
         [HttpPost]
         public async Task<IActionResult> CreateNotificationToStudent(NotificationSubRequestDto notificationRequestDto)
         {

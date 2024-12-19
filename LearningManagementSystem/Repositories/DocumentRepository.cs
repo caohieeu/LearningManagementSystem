@@ -3,6 +3,7 @@ using LearningManagementSystem.DAL;
 using LearningManagementSystem.Models;
 using LearningManagementSystem.Repositories.IRepository;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 using System.Linq;
 
 namespace LearningManagementSystem.Repositories
@@ -28,16 +29,30 @@ namespace LearningManagementSystem.Repositories
         {
             return GetDocumentBySubject(subjectId, _context);
         }
+        public Task<List<Document>> GetDocumentBy(string subjectId)
+        {
+            return GetDocumentBySubject(subjectId, _context);
+        }
 
         public async Task<List<Document>> GetDocumentBySubject(string subjectId, LMSContext _context)
         {
             return await _context.DocumentLessions
                 .Include(x => x.Document)
-                .Include(x => x.Lession.Title.Subject)
-                .Where(x => x.Lession.Title.Subject.Id == subjectId)
+                //.Include(x => x.Lession.Title.Subject)
+                //.Where(x => x.Lession.Title.Subject.Id == subjectId)
                 .GroupBy(x => x.DocumentId)
                 .Select(g => g.FirstOrDefault().Document)
                 .ToListAsync();
+        }
+
+        public Task<List<Document>> GetResoucesByTitleAndClass(int titleId, string classId)
+        {
+            return (from t in _context.Titles
+                    join l in _context.Lessions on t.Id equals l.TitleId
+                    join dl in _context.DocumentLessions on l.Id equals dl.LessionId
+                    join d in _context.Documents on dl.DocumentId equals d.Id
+                    where l.ClassId == classId && l.TitleId == titleId
+                    select d).ToListAsync();
         }
     }
 }

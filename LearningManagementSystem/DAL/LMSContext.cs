@@ -75,9 +75,16 @@ namespace LearningManagementSystem.DAL
                 .HasForeignKey(s => s.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<UserSubjects>()
+                .HasOne(s => s.Subject)
+                .WithMany()
+                .HasForeignKey(s => s.SubjectId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             //builder.Entity<Document>()
             //    .HasOne(u => u.FileDetails)
-            //    .WithOne(fd => fd.Document)
+            //    .WithOne(fd => fd.Do
+            //    cument)
             //    .HasForeignKey<FileDetails>(u => u.Id); 
 
             //builder.Entity<ApplicationUser>(entity =>

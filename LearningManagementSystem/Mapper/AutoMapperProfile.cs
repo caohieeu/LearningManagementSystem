@@ -29,6 +29,9 @@ namespace LearningManagementSystem.Mapper
             CreateMap<QAExamResponseDto, QuestionExam>().ReverseMap();
             CreateMap<ExQuestionBankRequestDto, Examination>().ReverseMap();
             CreateMap<QuestionBankResponseDto, QuestionExam>().ReverseMap();
+            CreateMap<AssignSubjectDto, UserSubjects>().ReverseMap();
+            CreateMap<TitleResponseDto, TitleStudentDto>().ReverseMap();
+            CreateMap<SubjectDetailDto, Subject>().ReverseMap();
         }
     }
 }

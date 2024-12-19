@@ -10,5 +10,6 @@ namespace LearningManagementSystem.Repositories.IRepository
         Task<bool> AddNotification(NotificationRequestDto notificationRequestDto);
         Task<bool> RemoveNotification(int id);
         Task<PagedResult<NotificationResponseDto>> GetPagedNotificationAsync(PaginationParams paginationParams);
+        Task<PagedResult<NotificationResponseDto>> GetPagedNotificationBySubjectAsync(PaginationParams paginationParams, string subjectId);
     }
 }

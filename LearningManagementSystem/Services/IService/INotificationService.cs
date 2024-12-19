@@ -10,6 +10,7 @@ namespace LearningManagementSystem.Services.IService
         Task<bool> CreateNotificationToStudent(NotificationSubRequestDto notificationRequestDto);
         Task<bool> DeleteNotification(int id);
         Task<PagedResult<NotificationResponseDto>> GetPagedNotificationAsync(PaginationParams paginationParams, bool? isRead);
+        Task<PagedResult<NotificationResponseDto>> GetPagedNotificationBySubjectAsync(PaginationParams pagination, string subjectId);
         Task<bool> ReadNotification(int notificationId);
     }
 }

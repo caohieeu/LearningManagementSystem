@@ -267,5 +267,10 @@ namespace LearningManagementSystem.Services
                 throw;
             }
         }
+
+        public async Task<List<Document>> GetResoucesByTitleAndClass(int titleId, string classId)
+        {
+            return await _documentRepository.GetResoucesByTitleAndClass(titleId, classId);
+        }
     }
 }

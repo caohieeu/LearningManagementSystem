@@ -16,6 +16,7 @@ namespace LearningManagementSystem.Services.IService
         Task<bool> ApproveDocument(int id);
         Task<bool> CancelApproveDocument(int documentId);
         Task<List<Document>> GetDocumentBySubject(string subjectId);
+        Task<List<Document>> GetResoucesByTitleAndClass(int titleId, string classId);
         Task<bool> InsertNewResource(DocumentRequestDto document);
         Task<List<Document>> FindDocumentByName(string documentName);
     }

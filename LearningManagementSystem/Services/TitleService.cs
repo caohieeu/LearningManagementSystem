@@ -11,31 +11,22 @@ namespace LearningManagementSystem.Services
     public class TitleService : ITitleService
     {
         private readonly ITitleRepository _titleRepository;
-        private readonly ISubjectService _subjectService;
         private readonly IMapper _mapper;
         public TitleService(
             ITitleRepository titleRepository, 
-            IMapper mapper,
-            ISubjectService subjectService)
+            IMapper mapper)
         {
             _titleRepository = titleRepository;
             _mapper = mapper;
-            _subjectService = subjectService;
         }
         public async Task<IEnumerable<Title>> GetAll()
         {
             return await _titleRepository.GetAll();
         }
 
-        public async Task<IEnumerable<TitleResponseDto>> GetBySubject(string id)
+        public async Task<IEnumerable<TitleResponseDto>> GetBySubject(string subjectId)
         {
-            var subject = await _subjectService.GetSubject(id);
-
-            if(subject == null)
-            {
-                throw new SubjectNotFoundException(ErrorCode.NotFound.GetErrorInfo().message);
-            }
-            var listTitle = await _titleRepository.GetBySubject(id);
+            var listTitle = await _titleRepository.GetBySubject(subjectId);
             return listTitle.Select(title => _mapper.Map<TitleResponseDto>(title));
         }
         public async Task<bool> InsertTitle(TitleRequestDto title)

@@ -60,6 +60,8 @@ namespace LearningManagementSystem.DAL
             }
 
             response.User = user;
+            response.Valid = true;
+            response.User.Role = user.Role;
 
             return response;
         }

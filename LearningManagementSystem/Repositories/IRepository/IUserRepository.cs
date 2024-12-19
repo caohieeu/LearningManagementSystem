@@ -9,6 +9,7 @@ namespace LearningManagementSystem.Repositories.IRepository
     {
         Task<bool> AddUser(SignUpDto? user);
         Task<bool> DeleteUser(string userId);
+        Task<ApplicationUser> GetUserById(string userId);
         Task<PagedResult<ApplicationUser>> GetUsers(FilterUserDto filter, PaginationParams paginationParams);
     }
 }

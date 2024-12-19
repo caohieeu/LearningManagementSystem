@@ -69,6 +69,12 @@ namespace LearningManagementSystem.Services
             return notification;
         }
 
+        public async Task<PagedResult<NotificationResponseDto>> GetPagedNotificationBySubjectAsync(PaginationParams paginationParams, string subjectId)
+        {
+            return await 
+                _notificationRepository.GetPagedNotificationBySubjectAsync(paginationParams, subjectId);
+        }
+
         public async Task<bool> ReadNotification(int notificationId)
         {
             var notification = await _notificationRepository.GetById(notificationId);

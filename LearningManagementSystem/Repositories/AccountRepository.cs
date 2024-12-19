@@ -7,7 +7,7 @@ using LearningManagementSystem.Models;
 using LearningManagementSystem.Repositories.IRepository;
 using LearningManagementSystem.Utils;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.JsonPatch.Internal;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -58,7 +58,7 @@ namespace LearningManagementSystem.Repositories
             var token = new JwtSecurityToken(
                 issuer: _config["JWT:ValidIssuer"],
                 audience: _config["JWT:ValidAudience"],
-                expires: DateTime.Now.AddHours(3),
+                expires: DateTime.Now.AddHours(2),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authenKey, SecurityAlgorithms.HmacSha512Signature)
             );
@@ -99,7 +99,7 @@ namespace LearningManagementSystem.Repositories
 
             if(user == null || !passwordValid)
             {
-                return authResponseDto;
+                throw new AuthenticationExceptionSub("Sai tên tài khoản hoặc mật khẩu");
             }
 
             var userRoles = await _userManager.GetRolesAsync(user);
@@ -109,14 +109,41 @@ namespace LearningManagementSystem.Repositories
                 listClaim.Add(new Claim(ClaimTypes.Role, role.ToString()));
             }
 
-            authResponseDto.result = true;
-            authResponseDto.token = GenerateToken(model, listClaim);
+            if(listClaim.Any(c => c.Value.ToString() == model.Role))
+            {
+
+                authResponseDto.result = true;
+                authResponseDto.token = GenerateToken(model, listClaim);
+            }
+            else
+            {
+                throw new AuthenticationExceptionSub("Sai vài trò");
+            }
 
             return authResponseDto;
         }
 
-        public async Task<IdentityResult> SignUpAsync(SignUpDto model)
+        public async Task<IdentityResult> SignUpAsync(SignUpDto model, IFormFile? avatar)
         {
+            string filePath = "";
+
+            if (avatar != null && avatar.Length > 0)
+            {
+                var foderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/avatars");
+                if (!Directory.Exists(foderPath))
+                {
+                    Directory.CreateDirectory(foderPath);
+                }
+
+                var fileName = $"{Guid.NewGuid()}_{avatar.FileName}";
+                filePath = Path.Combine(foderPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await avatar.CopyToAsync(stream);
+                }
+            }
+
             var user = new ApplicationUser
             {
                 Id = Guid.NewGuid().ToString(),
@@ -126,7 +153,8 @@ namespace LearningManagementSystem.Repositories
                 PhoneNumber = model.PhoneNumber,
                 Address = model.Address,
                 Gender = model.Gender,
-                DepartmentId = model.DepartmentId
+                DepartmentId = model.DepartmentId,
+                ImagePath = filePath,
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);

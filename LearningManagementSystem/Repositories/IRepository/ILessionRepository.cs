@@ -6,5 +6,6 @@ namespace LearningManagementSystem.Repositories.IRepository
     public interface ILessionRepository : IRepository<Lession>
     {
         Task<LessionResponseDto> GetByTitleAndClass(int titleId, string classId);
+        Task<LessionResponseDto> GetLessionsByTitleAndClass(int titleId, string classId);
     }
 }

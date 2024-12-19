@@ -107,5 +107,36 @@ namespace LearningManagementSystem.Repositories
 
             return true;
         }
+
+        public async Task<PagedResult<NotificationResponseDto>> GetPagedNotificationBySubjectAsync(PaginationParams paginationParams, string subjectId)
+        {
+            var query = _context.Notifications.AsQueryable();
+            var userId = await _userContext.GetId();
+
+            int totalItems = await query.CountAsync();
+
+            var items = await query
+                .Where(n => _context.UserNotifications
+                    .Any(un => un.NotificationId == n.Id &&
+                        un.UserId == userId))
+                .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                .Take(paginationParams.PageSize)
+                .ToListAsync();
+
+            var listNoification = new List<NotificationResponseDto>();
+            foreach (var item in items)
+            {
+                var user = _context.UserNotifications
+                    .Where(u => u.NotificationId == item.Id)
+                    .First();
+                var notification = _mapper.Map<NotificationResponseDto>(item);
+                notification.User = await _accountService.GetUserById(user.UserActive);
+
+                listNoification.Add(notification);
+            }
+
+            return new PagedResult<NotificationResponseDto>(listNoification, totalItems,
+                paginationParams.PageNumber, paginationParams.PageSize);
+        }
     }
 }

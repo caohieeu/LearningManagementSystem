@@ -37,6 +37,11 @@ namespace LearningManagementSystem.Services
             return (List<ApplicationUser>)await _userRepository.GetAll();
         }
 
+        public async Task<ApplicationUser> GetUserById(string userId)
+        {
+            return await _userRepository.GetUserById(userId);
+        }
+
         public async Task<PagedResult<UserResponseDto>> GetUsers(FilterUserDto filter, PaginationParams paginationParams)
         {
             var users = await _userRepository.GetUsers(filter, paginationParams);
